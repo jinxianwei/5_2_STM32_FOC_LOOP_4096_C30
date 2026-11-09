@@ -12,6 +12,7 @@
 ENCOSPEED EnCoSpeed;
 
 // 计算电机速度
+// TODO: 需要按照磁编码器spi通信进行更改
 void MotorSpeedGet(void)
 {
 	static float SpeedMrpmFil = 0.0f;
@@ -37,6 +38,7 @@ void MotorSpeedGet(void)
 }
 
 // 计算电机电角度
+// TODO: 需要按照磁编码器spi通信进行更改
 void MotorAngleGet(void)
 {
 	Motor.E_theta = (float)TIM3->CNT / ENCODE_PULSE * PIX2 * Motor.P; // CNT/16384(编码器转一圈计数值)*2PI*极对数
@@ -49,13 +51,14 @@ void MotorAngleGet(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // 定时器更新中断回调函数(htim:定时器句柄)
 {
+	// update 事件触发后调用
 	if (htim == (&htim1)) // FOC控制		20KHz
 	{
 		GetAdc(); // 获取电流
-		AxisDq(); // 坐标轴变换
+		AxisDq(); // 坐标轴变换 // TODO: 这里调用了MotorAngleGet(),计算电角度
 
 		EnCoSpeed.SpeedClock++;
-		if (EnCoSpeed.SpeedClock == SPEED_CNT) // 计算一次电机转速
+		if (EnCoSpeed.SpeedClock == SPEED_CNT) // 计算一次电机转速，和电流环频率形成差异
 		{
 			EnCoSpeed.SpeedClock %= SPEED_CNT;
 			MotorSpeedGet(); // 速度获取
