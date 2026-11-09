@@ -2,7 +2,7 @@
 .\output\fault.o: ..\MotorFoc\motor_ctrl.h
 .\output\fault.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h
 .\output\fault.o: ../Drivers/CMSIS/Include/core_cm4.h
-.\output\fault.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\fault.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\output\fault.o: ../Drivers/CMSIS/Include/cmsis_version.h
 .\output\fault.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 .\output\fault.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -17,7 +17,7 @@
 .\output\fault.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-.\output\fault.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\output\fault.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\stddef.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
@@ -33,10 +33,11 @@
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+.\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 .\output\fault.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
-.\output\fault.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\output\fault.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\fault.o: ../Sdrive/delay.h
 .\output\fault.o: ../Core/Inc/stm32f4xx_it.h
 .\output\fault.o: ../App/hmi_app.h
@@ -47,13 +48,13 @@
 .\output\fault.o: ../MotorFoc/motor_ctrl.h
 .\output\fault.o: ../MotorFoc/Dsp/CoreSupport/arm_math.h
 .\output\fault.o: ../MotorFoc/Dsp/CoreSupport/core_cm4.h
-.\output\fault.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\fault.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\output\fault.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\string.h
+.\output\fault.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\math.h
 .\output\fault.o: ..\MotorFoc\foc.h
 .\output\fault.o: ..\MotorFoc\motor_para.h
 .\output\fault.o: ..\MotorFoc\pid.h
 .\output\fault.o: ..\MotorFoc\filter.h
-.\output\fault.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\output\fault.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\fault.o: ..\MotorFoc\hfi.h
 .\output\fault.o: ..\MotorFoc\flux.h
 .\output\fault.o: ..\MotorFoc\sen.h

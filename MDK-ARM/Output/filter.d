@@ -9,7 +9,7 @@
 .\output\filter.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
 .\output\filter.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h
 .\output\filter.o: ../Drivers/CMSIS/Include/core_cm4.h
-.\output\filter.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\filter.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\output\filter.o: ../Drivers/CMSIS/Include/cmsis_version.h
 .\output\filter.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 .\output\filter.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -17,7 +17,7 @@
 .\output\filter.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-.\output\filter.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\output\filter.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\stddef.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
@@ -33,10 +33,11 @@
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+.\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 .\output\filter.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 .\output\filter.o: ../MotorFoc/Dsp/CoreSupport/arm_math.h
 .\output\filter.o: ../MotorFoc/Dsp/CoreSupport/core_cm4.h
-.\output\filter.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\filter.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\output\filter.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\string.h
+.\output\filter.o: D:\SoftWare\Keil_v5\Core\ARM\ARMCC\Bin\..\include\math.h

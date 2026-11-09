@@ -1,69 +1,153 @@
 /*
 ***********************************************************************
-* 文件名：tim_drv.c
-* 作  者：？？？
-* 日  期：2024/06/20
-* 说  明：定时器任务
+* �ļ�����tim_drv.c
+* ��  �ߣ�������
+* ��  �ڣ�2024/06/20
+* ˵  ������ʱ������
 ***********************************************************************
 */
 
 #include "task.h"
 
-ENCOSPEED EnCoSpeed;
+#define TLE5012_COUNTS_PER_REVOLUTION 32768U
+#define TLE5012_SPI_TIMEOUT_CYCLES (SystemCoreClock / 40000U)
 
-// 计算电机速度
-// TODO: 需要按照磁编码器spi通信进行更改
+extern SPI_HandleTypeDef hspi1;
+
+ENCOSPEED EnCoSpeed;
+volatile uint32_t EncoderSpiErrorCount;
+
+static uint8_t TLE5012_WaitForFlag(uint32_t flag, uint8_t set, uint32_t start)
+{
+	while (((SPI1->SR & flag) != 0U) != (set != 0U))
+	{
+		if ((uint32_t)(DWT->CYCCNT - start) >= TLE5012_SPI_TIMEOUT_CYCLES)
+			return 0U;
+	}
+	return 1U;
+}
+
+static uint8_t TLE5012_ReadRawAngle(uint16_t *rawAngle)
+{
+	const uint8_t command[2] = {0x80U, 0x21U};
+	uint8_t response[2];
+	uint32_t start = DWT->CYCCNT;
+	uint8_t ok = 0U;
+
+	if (hspi1.State != HAL_SPI_STATE_READY)
+		goto failed;
+
+	HAL_GPIO_WritePin(ENCODER_CS_GPIO_Port, ENCODER_CS_Pin, GPIO_PIN_RESET);
+
+	__HAL_SPI_DISABLE(&hspi1);
+	SET_BIT(SPI1->CR1, SPI_CR1_BIDIOE);
+	__HAL_SPI_ENABLE(&hspi1);
+
+	for (uint32_t i = 0U; i < sizeof(command); i++)
+	{
+		if (!TLE5012_WaitForFlag(SPI_FLAG_TXE, 1U, start))
+			goto failed;
+		*((__IO uint8_t *)&SPI1->DR) = command[i];
+	}
+
+	if (!TLE5012_WaitForFlag(SPI_FLAG_TXE, 1U, start) ||
+		!TLE5012_WaitForFlag(SPI_FLAG_BSY, 0U, start))
+		goto failed;
+
+	__HAL_SPI_DISABLE(&hspi1);
+	CLEAR_BIT(SPI1->CR1, SPI_CR1_BIDIOE);
+	__HAL_SPI_ENABLE(&hspi1);
+
+	for (uint32_t i = 0U; i < sizeof(response); i++)
+	{
+		if (!TLE5012_WaitForFlag(SPI_FLAG_RXNE, 1U, start))
+			goto failed;
+		response[i] = *((__IO uint8_t *)&SPI1->DR);
+	}
+
+	ok = 1U;
+
+failed:
+	HAL_GPIO_WritePin(ENCODER_CS_GPIO_Port, ENCODER_CS_Pin, GPIO_PIN_SET);
+	__HAL_SPI_DISABLE(&hspi1);
+	SET_BIT(SPI1->CR1, SPI_CR1_BIDIOE);
+	__HAL_SPI_ENABLE(&hspi1);
+
+	if (ok == 0U)
+	{
+		__HAL_SPI_CLEAR_OVRFLAG(&hspi1);
+		EncoderSpiErrorCount++;
+		return 0U;
+	}
+
+	*rawAngle = (uint16_t)((((uint16_t)response[0] << 8) | response[1]) & 0x7FFFU);
+	return 1U;
+}
+
 void MotorSpeedGet(void)
 {
 	static float SpeedMrpmFil = 0.0f;
+	static uint8_t SpeedInitialized = 0U;
 
-	EnCoSpeed.EncoderCnt = TIM3->CNT; // 当前CNT的值+溢出次数*定时器的脉冲触发数
+	if (SpeedInitialized == 0U)
+	{
+		EnCoSpeed.EncoLastCnt = EnCoSpeed.EncoderCnt;
+		SpeedMrpmFil = 0.0f;
+		Motor.speed_M_rpm = 0.0f;
+		Motor.speed_E_rpm = 0.0f;
+		SpeedInitialized = 1U;
+		return;
+	}
 
-	int32_t Diff = (int32_t)((uint32_t)EnCoSpeed.EncoderCnt - (uint32_t)EnCoSpeed.EncoLastCnt); // 利用模算术
+	int32_t Diff = EnCoSpeed.EncoderCnt - EnCoSpeed.EncoLastCnt;
 
-	// 通用回绕处理（适用于上溢或下溢）
-	if (Diff > (int32_t)(TIM3_PULSE / 2))
-		Diff -= (int32_t)TIM3_PULSE;
-	else if (Diff < -(int32_t)(TIM3_PULSE / 2))
-		Diff += (int32_t)TIM3_PULSE;
+	if (Diff > (int32_t)(TLE5012_COUNTS_PER_REVOLUTION / 2U))
+		Diff -= (int32_t)TLE5012_COUNTS_PER_REVOLUTION;
+	else if (Diff < -(int32_t)(TLE5012_COUNTS_PER_REVOLUTION / 2U))
+		Diff += (int32_t)TLE5012_COUNTS_PER_REVOLUTION;
 
-	float SpeedMrpmTemp = ((float)Diff * ((float)ENCODER_FRQ / (float)ENCODE_PULSE));
+	float SpeedMrpmTemp = (float)Diff * ((float)ENCODER_FRQ / (float)TLE5012_COUNTS_PER_REVOLUTION);
 
 	SpeedMrpmFil = (LPF_U_A * SpeedMrpmTemp) + (LPF_U_B * SpeedMrpmFil);
 
 	Motor.speed_M_rpm = SpeedMrpmFil;
 
-	Motor.speed_E_rpm = Motor.speed_M_rpm * Motor.P; // 电角速度 = 机械角速度 * 极对数
+	Motor.speed_E_rpm = Motor.speed_M_rpm * Motor.P; // 锟斤拷锟斤拷俣锟? = 锟斤拷械锟斤拷锟劫讹拷 * 锟斤拷锟斤拷锟斤拷
 	EnCoSpeed.EncoLastCnt = EnCoSpeed.EncoderCnt;
 }
 
-// 计算电机电角度
-// TODO: 需要按照磁编码器spi通信进行更改
 void MotorAngleGet(void)
 {
-	Motor.E_theta = (float)TIM3->CNT / ENCODE_PULSE * PIX2 * Motor.P; // CNT/16384(编码器转一圈计数值)*2PI*极对数
+	uint16_t rawAngle;
+
+	if (!TLE5012_ReadRawAngle(&rawAngle))
+		return;
+
+	EnCoSpeed.EncoderCnt = (int32_t)rawAngle;
+	// Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
+	// 				(float)TLE5012_COUNTS_PER_REVOLUTION * Motor.P;
+	Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
+					(float)TLE5012_COUNTS_PER_REVOLUTION;
 
 	while (Motor.E_theta >= PIX2)
 		Motor.E_theta -= PIX2;
-	while (Motor.E_theta <= 0.0f)
-		Motor.E_theta += PIX2;
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // 定时器更新中断回调函数(htim:定时器句柄)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // ��ʱ�������жϻص�����(htim:��ʱ�����)
 {
-	// update 事件触发后调用
-	if (htim == (&htim1)) // FOC控制		20KHz
+	// update �¼����������
+	if (htim == (&htim1)) // FOC����		20KHz
 	{
-		GetAdc(); // 获取电流
-		AxisDq(); // 坐标轴变换 // TODO: 这里调用了MotorAngleGet(),计算电角度
+		GetAdc(); // ��ȡ����
+		AxisDq(); // ������任 // TODO: ���������MotorAngleGet(),�����Ƕ�
 
 		EnCoSpeed.SpeedClock++;
-		if (EnCoSpeed.SpeedClock == SPEED_CNT) // 计算一次电机转速，和电流环频率形成差异
+		if (EnCoSpeed.SpeedClock == SPEED_CNT) // ����һ�ε��ת�٣��͵�����Ƶ���γɲ���
 		{
 			EnCoSpeed.SpeedClock %= SPEED_CNT;
-			MotorSpeedGet(); // 速度获取
+			MotorSpeedGet(); // �ٶȻ�ȡ
 		}
 
-		MotorModeSel(); // 控制模式选择
+		MotorModeSel(); // ����ģʽѡ��
 	}
 }

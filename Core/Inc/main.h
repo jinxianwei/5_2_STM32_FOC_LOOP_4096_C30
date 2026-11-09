@@ -69,6 +69,8 @@ void Error_Handler(void);
 #define LED_G_GPIO_Port GPIOD
 #define LED_R_Pin GPIO_PIN_13
 #define LED_R_GPIO_Port GPIOD
+#define ENCODER_CS_Pin GPIO_PIN_7
+#define ENCODER_CS_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
 
