@@ -124,10 +124,10 @@ void MotorAngleGet(void)
 		return;
 
 	EnCoSpeed.EncoderCnt = (int32_t)rawAngle;
-	// Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
-	// 				(float)TLE5012_COUNTS_PER_REVOLUTION * Motor.P;
 	Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
-					(float)TLE5012_COUNTS_PER_REVOLUTION;
+	 				(float)TLE5012_COUNTS_PER_REVOLUTION * Motor.P;
+//	Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
+//					(float)TLE5012_COUNTS_PER_REVOLUTION;
 
 	while (Motor.E_theta >= PIX2)
 		Motor.E_theta -= PIX2;

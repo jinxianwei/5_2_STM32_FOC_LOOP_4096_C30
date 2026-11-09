@@ -157,18 +157,34 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>71</LineNumber>
+          <LineNumber>210</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134235900</Address>
+          <Address>134238140</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\Code\INMO\INMOP_FOC寮€鍙戞澘\CODE\5_2_STM32_FOC_LOOP_4096_C30\Sdrive\tim_drv.c</Filename>
+          <Filename>D:\Code\INMO\INMOP_FOC寮€鍙戞澘\CODE\5_2_STM32_FOC_LOOP_4096_C30\App\hmi_app.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32_FOC\../Sdrive/tim_drv.c\71</Expression>
+          <Expression>\\STM32_FOC\../App/hmi_app.c\210</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>89</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134242614</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Code\INMO\INMOP_FOC寮€鍙戞澘\CODE\5_2_STM32_FOC_LOOP_4096_C30\App\hmi_app.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32_FOC\../App/hmi_app.c\89</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -331,6 +347,26 @@
           <count>31</count>
           <WinNumber>1</WinNumber>
           <ItemText>Motor.E_theta</ItemText>
+        </Ww>
+        <Ww>
+          <count>32</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Motor.CtrlMode</ItemText>
+        </Ww>
+        <Ww>
+          <count>33</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SPEED_LOOP</ItemText>
+        </Ww>
+        <Ww>
+          <count>34</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Para.SpeedRef,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>35</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>DataBuff</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

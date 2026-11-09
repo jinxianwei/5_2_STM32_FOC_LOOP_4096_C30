@@ -52,7 +52,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (../MotorFoc/foc.h)(0x692D4226)
-I (../MotorFoc/motor_para.h)(0x6AF1444F)
+I (../MotorFoc/motor_para.h)(0x6AF16C6A)
 I (../MotorFoc/pid.h)(0x692FCDBC)
 I (../MotorFoc/filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -112,7 +112,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (../MotorFoc/foc.h)(0x692D4226)
-I (../MotorFoc/motor_para.h)(0x6AF1444F)
+I (../MotorFoc/motor_para.h)(0x6AF16C6A)
 I (../MotorFoc/pid.h)(0x692FCDBC)
 I (../MotorFoc/filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -858,7 +858,7 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h)(0x6ABCB881)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h)(0x6ABCB881)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x6ABCB881)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x6ABCB881)
-F (..\App\task.c)(0x693A2D9A)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\task.o --omf_browse .\output\task.crf --depend .\output\task.d)
+F (..\App\task.c)(0x6AF17A25)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\task.o --omf_browse .\output\task.crf --depend .\output\task.d)
 I (..\App\task.h)(0x692FE33C)
 I (../Core/Inc/main.h)(0x6AF13BD6)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x6ABCB881)
@@ -910,7 +910,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (../MotorFoc/foc.h)(0x692D4226)
-I (../MotorFoc/motor_para.h)(0x6AF1444F)
+I (../MotorFoc/motor_para.h)(0x6AF16C6A)
 I (../MotorFoc/pid.h)(0x692FCDBC)
 I (../MotorFoc/filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -970,7 +970,7 @@ I (../MotorFoc/Dsp/CoreSupport/arm_math.h)(0x668FAA18)
 I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (../MotorFoc/foc.h)(0x692D4226)
-I (../MotorFoc/motor_para.h)(0x6AF1444F)
+I (../MotorFoc/motor_para.h)(0x6AF16C6A)
 I (../MotorFoc/pid.h)(0x692FCDBC)
 I (../MotorFoc/filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1105,7 +1105,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (../MotorFoc/foc.h)(0x692D4226)
-I (../MotorFoc/motor_para.h)(0x6AF1444F)
+I (../MotorFoc/motor_para.h)(0x6AF16C6A)
 I (../MotorFoc/pid.h)(0x692FCDBC)
 I (../MotorFoc/filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1114,7 +1114,7 @@ I (../MotorFoc/flux.h)(0x6A07C11C)
 I (../MotorFoc/sen.h)(0x69C48414)
 I (../MotorFoc/smo.h)(0x692D3B74)
 I (../MotorFoc/fault.h)(0x69351D24)
-F (..\Sdrive\tim_drv.c)(0x6AF14536)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\tim_drv.o --omf_browse .\output\tim_drv.crf --depend .\output\tim_drv.d)
+F (..\Sdrive\tim_drv.c)(0x6AF18F25)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\tim_drv.o --omf_browse .\output\tim_drv.crf --depend .\output\tim_drv.d)
 I (../App/task.h)(0x692FE33C)
 I (../Core/Inc/main.h)(0x6AF13BD6)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x6ABCB881)
@@ -1165,7 +1165,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (../MotorFoc/foc.h)(0x692D4226)
-I (../MotorFoc/motor_para.h)(0x6AF1444F)
+I (../MotorFoc/motor_para.h)(0x6AF16C6A)
 I (../MotorFoc/pid.h)(0x692FCDBC)
 I (../MotorFoc/filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1211,8 +1211,8 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h)(0x6ABCB881)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h)(0x6ABCB881)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x6ABCB881)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x6ABCB881)
-F (..\MotorFoc\motor_para.h)(0x6AF1444F)()
-F (..\MotorFoc\motor_ctrl.c)(0x6A0873AC)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\motor_ctrl.o --omf_browse .\output\motor_ctrl.crf --depend .\output\motor_ctrl.d)
+F (..\MotorFoc\motor_para.h)(0x6AF16C6A)()
+F (..\MotorFoc\motor_ctrl.c)(0x6AF182B3)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\motor_ctrl.o --omf_browse .\output\motor_ctrl.crf --depend .\output\motor_ctrl.d)
 I (..\MotorFoc\motor_ctrl.h)(0x6AF14440)
 I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h)(0x6ABCB881)
 I (../Drivers/CMSIS/Include/core_cm4.h)(0x6ABCB882)
@@ -1264,7 +1264,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1325,7 +1325,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1386,7 +1386,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1447,7 +1447,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1550,7 +1550,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1611,7 +1611,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1620,7 +1620,7 @@ I (..\MotorFoc\flux.h)(0x6A07C11C)
 I (..\MotorFoc\sen.h)(0x69C48414)
 I (..\MotorFoc\smo.h)(0x692D3B74)
 I (..\MotorFoc\fault.h)(0x69351D24)
-F (..\MotorFoc\flux.c)(0x6A07C11C)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\flux.o --omf_browse .\output\flux.crf --depend .\output\flux.d)
+F (..\MotorFoc\flux.c)(0x6AF1456B)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections --signed_chars -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Sdrive -I ../MotorFoc -I ../MotorFoc/Dsp/CoreSupport-I.\RTE\_STM32_FOC-ID:\SoftWare\Keil_v5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\SoftWare\Keil_v5\Pack\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx -DARM_MATH_CM4-o .\output\flux.o --omf_browse .\output\flux.crf --depend .\output\flux.d)
 I (..\MotorFoc\motor_ctrl.h)(0x6AF14440)
 I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h)(0x6ABCB881)
 I (../Drivers/CMSIS/Include/core_cm4.h)(0x6ABCB882)
@@ -1672,7 +1672,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1733,7 +1733,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
@@ -1794,7 +1794,7 @@ I (../MotorFoc/Dsp/CoreSupport/core_cm4.h)(0x60FE1F30)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\math.h)(0x60252378)
 I (..\MotorFoc\foc.h)(0x692D4226)
-I (..\MotorFoc\motor_para.h)(0x6AF1444F)
+I (..\MotorFoc\motor_para.h)(0x6AF16C6A)
 I (..\MotorFoc\pid.h)(0x692FCDBC)
 I (..\MotorFoc\filter.h)(0x6921DF4E)
 I (D:\SoftWare\Keil_v5\Core\ARM\ARMCC\include\stdbool.h)(0x6025237C)
