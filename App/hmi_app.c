@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
-* ÎÄ¼þÃû£ºhmi_app.c
-* ×÷  Õß£º£¿£¿£¿
-* ÈÕ  ÆÚ£º2024/10/07
-* Ëµ  Ã÷£ºÈË»ú½»»¥ÈÎÎñ
+* ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½hmi_app.c
+* ï¿½ï¿½  ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½  ï¿½Ú£ï¿½2024/10/07
+* Ëµ  ï¿½ï¿½ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ***********************************************************************
 */
 
@@ -17,24 +17,24 @@
 FloatToChar fc;
 USART_DATA Usart;
 
-const uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f}; // JustFloat¹æ¶¨{0x00, 0x00, 0x80, 0x7f}ÎªÒ»×éÊý¾ÝµÄ½áÊø
+const uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f}; // JustFloatï¿½æ¶¨{0x00, 0x00, 0x80, 0x7f}ÎªÒ»ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÄ½ï¿½ï¿½ï¿½
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if (huart->Instance == USART1) // Èç¹ûÊÇ´®¿Ú1
+	if (huart->Instance == USART1) // ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½1
 	{
-		Usart.RxLine++;											 // Ã¿½ÓÊÕµ½Ò»¸öÊý¾Ý£¬½øÈë»Øµ÷Êý¾Ý³¤¶È¼Ó1
-		Usart.UsartRxBuf[Usart.RxLine - 1] = Usart.aRxBuffer[0]; // °ÑÃ¿´Î½ÓÊÕµ½µÄÊý¾Ý±£´æµ½»º´æÊý×é
-		if (Usart.aRxBuffer[0] == 0xfa)							 // ½ÓÊÕ½áÊø±êÖ¾Î»£¬Õâ¸öÊý¾Ý¿ÉÒÔ×Ô¶¨Òå£¬¸ù¾ÝÊµ¼ÊÐèÇó
+		Usart.RxLine++;											 // Ã¿ï¿½ï¿½ï¿½Õµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½È¼ï¿½1
+		Usart.UsartRxBuf[Usart.RxLine - 1] = Usart.aRxBuffer[0]; // ï¿½ï¿½Ã¿ï¿½Î½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½æµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		if (Usart.aRxBuffer[0] == 0xfa)							 // ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			Usart.UsartRxSta = 1; // ½ÓÊÕÍê³É±êÖ¾Î»ÖÃÒ»
+			Usart.UsartRxSta = 1; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½Ö¾Î»ï¿½ï¿½Ò»
 		}
-		Usart.aRxBuffer[0] = 0; // Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
+		Usart.aRxBuffer[0] = 0; // ï¿½ï¿½Õ´ï¿½ï¿½Ú½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½
 	}
 }
 
 /*JustFloat*/
-// ¶¨ÒåÒ»¸öÁªºÏÌå£¬½«´«ÈëµÄ¸¡µãÐÍ²ÎÊý´æÈëµ½´«ÈëµÄunsigned charÊý×éÀï
+// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ëµ½ï¿½ï¿½ï¿½ï¿½ï¿½unsigned charï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void float_turn_u8(float f, uint8_t *c)
 {
 	uint8_t x;
@@ -50,11 +50,11 @@ void float_turn_u8(float f, uint8_t *c)
 /*
 
 *JustFloat:
-*fdata:´«ÈëÊý×éÖ¸Õë
-*fdata_num:Êý×éÊý¾Ý¸öÊý
-*Usart_choose:·¢ËÍµÄ´®¿ÚµØÖ·
+*fdata:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+*fdata_num:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
+*Usart_choose:ï¿½ï¿½ï¿½ÍµÄ´ï¿½ï¿½Úµï¿½Ö·
 
-Ç°Á½¸öfor½« floatÀàÐÍ×ª»»Î»ËÄÎ»unsigned charÀàÐÍ²¢·¢ËÍ³öÈ¥£¬µÚÈý¸öforÑ­»·½«Î²²¿·¢³öÈ¥
+Ç°ï¿½ï¿½ï¿½ï¿½forï¿½ï¿½ floatï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Î»ï¿½ï¿½Î»unsigned charï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½Í³ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½forÑ­ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥
 */
 
 static void JustFloatSend(float *fdata, uint16_t fdata_num, USART_TypeDef *Usart_choose)
@@ -81,14 +81,14 @@ static void JustFloatSend(float *fdata, uint16_t fdata_num, USART_TypeDef *Usart
 }
 
 /*
- * ¸ù¾Ý´®¿ÚÐÅÏ¢½øÐÐPIDµ÷²Î
+ * ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½
  */
 static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 {
 	static uint8_t reg = 0;
-	memcpy(&fc.c_data, DataBuff, 4); // ×ñÑ­IEEE 754Ð­Òé£¬½«Êý¾ÝÇ°ËÄÎ»¸³Óè¹²ÓÃÌå
+	memcpy(&fc.c_data, DataBuff, 4); // ï¿½ï¿½Ñ­IEEE 754Ð­ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Î»ï¿½ï¿½ï¿½è¹²ï¿½ï¿½ï¿½ï¿½
 
-	reg = DataBuff[6]; // ÃüÁî
+	reg = DataBuff[6]; // ï¿½ï¿½ï¿½ï¿½
 
 	switch (reg)
 	{
@@ -125,48 +125,48 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		}
 		case SPEED_LOOP:
 		{
-			MotorRun();					 // Æô¶¯PWM
-			Motor.CtrlMode = SPEED_LOOP; // ÓÐ¸Ð£¬ËÙ¶È&µçÁ÷±Õ»·
+			MotorRun();					 // ï¿½ï¿½ï¿½ï¿½PWM
+			Motor.CtrlMode = SPEED_LOOP; // ï¿½Ð¸Ð£ï¿½ï¿½Ù¶ï¿½&ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½
 			break;
 		}
 		case CUR_LOOP:
 		{
-			MotorRun();				   // Æô¶¯PWM
-			Motor.CtrlMode = CUR_LOOP; // ÓÐ¸Ð£¬µçÁ÷±Õ»·
+			MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
+			Motor.CtrlMode = CUR_LOOP; // ï¿½Ð¸Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½
 			break;
 		}
 		case POS_LOOP:
 		{
-			MotorRun();				   // Æô¶¯PWM
-			Motor.CtrlMode = POS_LOOP; // ÓÐ¸Ð£¬Î»ÖÃ±Õ»·
+			MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
+			Motor.CtrlMode = POS_LOOP; // ï¿½Ð¸Ð£ï¿½Î»ï¿½Ã±Õ»ï¿½
 			break;
 		}
 		case IF_CTRL:
 		{
-			MotorRun();				  // Æô¶¯PWM
-			Motor.CtrlMode = IF_CTRL; // IFÆô¶¯
+			MotorRun();				  // ï¿½ï¿½ï¿½ï¿½PWM
+			Motor.CtrlMode = IF_CTRL; // IFï¿½ï¿½ï¿½ï¿½
 			break;
 		}
 
 		case HFI_CTRL:
 		{
 			PllHfiPara.Theta = 0;
-			MotorRun();				   // Æô¶¯PWM
+			MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
 			Motor.CtrlMode = HFI_CTRL; // HFIÄ£Ê½
 			break;
 		}
 
 		case HFI_SMO:
 		{
-			MotorRun();				  // Æô¶¯PWM
-			Motor.CtrlMode = HFI_SMO; // µÍËÙHFI£¬¸ßËÙ»¬Ä¤
+			MotorRun();				  // ï¿½ï¿½ï¿½ï¿½PWM
+			Motor.CtrlMode = HFI_SMO; // ï¿½ï¿½ï¿½ï¿½HFIï¿½ï¿½ï¿½ï¿½ï¿½Ù»ï¿½Ä¤
 			break;
 		}
 
 		case HFI_FLUX:
 		{
-			MotorRun();				   // Æô¶¯PWM
-			Motor.CtrlMode = HFI_FLUX; // µÍËÙHFI£¬¸ßËÙ´ÅÁ´
+			MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
+			Motor.CtrlMode = HFI_FLUX; // ï¿½ï¿½ï¿½ï¿½HFIï¿½ï¿½ï¿½ï¿½ï¿½Ù´ï¿½ï¿½ï¿½
 			break;
 		}
 
@@ -174,7 +174,7 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		{
 			IFObserverStartInit();
 			MotorRun();
-			Motor.CtrlMode = IF_SMO; // IFÆô¶¯£¬¸ßËÙ»¬Ä¤
+			Motor.CtrlMode = IF_SMO; // IFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù»ï¿½Ä¤
 			break;
 		}
 
@@ -182,13 +182,13 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		{
 			IFObserverStartInit();
 			MotorRun();
-			Motor.CtrlMode = IF_FLUX; // IFÆô¶¯£¬¸ßËÙ´ÅÁ´
+			Motor.CtrlMode = IF_FLUX; // IFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù´ï¿½ï¿½ï¿½
 			break;
 		}
 		case TO_ZERO:
 		{
 			Motor.CtrlMode = TO_ZERO;
-			PostionToZeroDouble(); // ¶þ´Îµ÷Áã
+			PostionToZeroDouble(); // ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½
 			Motor.CtrlMode = STOP;
 			break;
 		}
@@ -207,38 +207,38 @@ void RecevToVofa(void)
 {
 	if (Usart.UsartRxSta)
 	{
-		if (Usart.UsartRxBuf[5] == 0xfb) // Ð£ÑéÎ»£¬¼ì²â½ÓÊÕµ½µÄÊý¾ÝÊÇ·ñÕýÈ·
+		if (Usart.UsartRxBuf[5] == 0xfb) // Ð£ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È·
 		{
-			VofaPiAdjust(Usart.UsartRxBuf, 1); // Êý¾Ý½âÎöºÍ²ÎÊý¸³Öµº¯Êý
+			VofaPiAdjust(Usart.UsartRxBuf, 1); // ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
 		}
-		memset(Usart.UsartRxBuf, 0, 8); // Çå¿Õ»º´æÊý×é
-		Usart.RxLine = 0;				// Çå¿Õ½ÓÊÕ³¤¶È
+		memset(Usart.UsartRxBuf, 0, 8); // ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		Usart.RxLine = 0;				// ï¿½ï¿½Õ½ï¿½ï¿½Õ³ï¿½ï¿½ï¿½
 		Usart.UsartRxSta = 0;
 	}
 }
 
-// Êý¾Ý·¢ËÍÖÁÉÏÎ»»ú¹Û²â
+// ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Û²ï¿½
 void SendToVofa(void)
 {
-	Usart.VofaData[0] = Motor.speed_M_rpm;	  // µç½Ç¶È
-	Usart.VofaData[1] = Para.SpeedRef;		  // Ä¿±êËÙ¶È
-	Usart.VofaData[2] = pi_spd.Fbk / Motor.P; // Êµ¼ÊËÙ¶È
-	Usart.VofaData[3] = Motor.E_theta;		  // ±àÂëÆ÷½Ç¶È
-	Usart.VofaData[4] = flux.theta_e;		  // ´ÅÁ´¹Û²â½Ç¶È
-	Usart.VofaData[5] = PllHfiPara.Theta;	  // HFI½Ç¶È
-	Usart.VofaData[6] = PllSmoPara.Angle;	  // »¬Ä¤¹Û²â½Ç¶È
-	Usart.VofaData[7] = Para.IfTheta;		  // IFÇ¿ÍÏ½Ç¶È
-	Usart.VofaData[8] = AdcFilPara.CurU;	  // UÏàµçÁ÷
-	Usart.VofaData[9] = AdcFilPara.CurV;	  // VÏàµçÁ÷
-	Usart.VofaData[10] = AdcFilPara.CurW;	  // WÏàµçÁ÷
-	Usart.VofaData[11] = TIM3->CNT;			  // Êµ¼ÊÎ»ÖÃ
-	Usart.VofaData[12] = Pos.P_Ref;			  // Ä¿±êÎ»ÖÃ
+	Usart.VofaData[0] = Motor.speed_M_rpm;	  // ï¿½ï¿½Ç¶ï¿½
+	Usart.VofaData[1] = Para.SpeedRef;		  // Ä¿ï¿½ï¿½ï¿½Ù¶ï¿½
+	Usart.VofaData[2] = pi_spd.Fbk / Motor.P; // Êµï¿½ï¿½ï¿½Ù¶ï¿½
+	Usart.VofaData[3] = Motor.E_theta;		  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½
+	Usart.VofaData[4] = flux.theta_e;		  // ï¿½ï¿½ï¿½ï¿½ï¿½Û²ï¿½Ç¶ï¿½
+	Usart.VofaData[5] = PllHfiPara.Theta;	  // HFIï¿½Ç¶ï¿½
+	Usart.VofaData[6] = PllSmoPara.Angle;	  // ï¿½ï¿½Ä¤ï¿½Û²ï¿½Ç¶ï¿½
+	Usart.VofaData[7] = Para.IfTheta;		  // IFÇ¿ï¿½Ï½Ç¶ï¿½
+	Usart.VofaData[8] = AdcFilPara.CurU;	  // Uï¿½ï¿½ï¿½ï¿½ï¿½
+	Usart.VofaData[9] = AdcFilPara.CurV;	  // Vï¿½ï¿½ï¿½ï¿½ï¿½
+	Usart.VofaData[10] = AdcFilPara.CurW;	  // Wï¿½ï¿½ï¿½ï¿½ï¿½
+	Usart.VofaData[11] = TIM3->CNT;			  // Êµï¿½ï¿½Î»ï¿½ï¿½
+	Usart.VofaData[12] = Pos.P_Ref;			  // Ä¿ï¿½ï¿½Î»ï¿½ï¿½
 	JustFloatSend(Usart.VofaData, 13, USART1);
 }
 
 /**
 ***********************************************************
-* @brief LEDÓ¦ÓÃ³ÌÐò
+* @brief LEDÓ¦ï¿½Ã³ï¿½ï¿½ï¿½
 * @param
 * @return
 ***********************************************************
@@ -248,19 +248,19 @@ void SendToVofa(void)
 #define LED_R_INDEX 2
 void LedTask(uint8_t r, uint8_t g, uint8_t b)
 {
-	/* ºì */
+	/* ï¿½ï¿½ */
 	if (r)
 		TurnOnLed(LED_R_INDEX);
 	else
 		TurnOffLed(LED_R_INDEX);
 
-	/* ÂÌ */
+	/* ï¿½ï¿½ */
 	if (g)
 		TurnOnLed(LED_G_INDEX);
 	else
 		TurnOffLed(LED_G_INDEX);
 
-	/* À¶ */
+	/* ï¿½ï¿½ */
 	if (b)
 		TurnOnLed(LED_B_INDEX);
 	else
@@ -269,7 +269,7 @@ void LedTask(uint8_t r, uint8_t g, uint8_t b)
 
 /**
 ***********************************************************
-* @brief µçÎ»Æ÷Ó¦ÓÃ³ÌÐò
+* @brief ï¿½ï¿½Î»ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½
 * @param
 * @return
 ***********************************************************
@@ -342,7 +342,7 @@ void VrTask(void)
 
 /**
 ***********************************************************
-* @brief °´¼üÓ¦ÓÃ³ÌÐò
+* @brief ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½
 * @param
 * @return
 ***********************************************************
@@ -367,48 +367,48 @@ void HmiTask(void)
 
 	case KEY4_LONG_PRESS:
 	{
-		HAL_GPIO_WritePin(PWR_GPIO_Port, PWR_Pin, GPIO_PIN_RESET); // ³¤°´¹Ø»ú
+		HAL_GPIO_WritePin(PWR_GPIO_Port, PWR_Pin, GPIO_PIN_RESET); // ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½
 	}
 	break;
 	case KEY1_SHORT_PRESS:
 	{
-		MotorRun();				  // Æô¶¯PWM
-		Motor.CtrlMode = HFI_SMO; // µÍËÙHFI£¬¸ßËÙ»¬Ä¤
+		MotorRun();				  // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = HFI_SMO; // ï¿½ï¿½ï¿½ï¿½HFIï¿½ï¿½ï¿½ï¿½ï¿½Ù»ï¿½Ä¤
 	}
 	break;
 
 	case KEY1_DOUBLE_PRESS:
 	{
-		MotorRun();				 // Æô¶¯PWM
-		Motor.CtrlMode = IF_SMO; // µÍËÙIF¸ßËÙSMO
+		MotorRun();				 // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = IF_SMO; // ï¿½ï¿½ï¿½ï¿½IFï¿½ï¿½ï¿½ï¿½SMO
 	}
 	break;
 
 	case KEY1_LONG_PRESS:
 	{
-		MotorRun();				   // Æô¶¯PWM
-		Motor.CtrlMode = HFI_FLUX; // µÍËÙHFI£¬¸ßËÙ´ÅÁ´
+		MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = HFI_FLUX; // ï¿½ï¿½ï¿½ï¿½HFIï¿½ï¿½ï¿½ï¿½ï¿½Ù´ï¿½ï¿½ï¿½
 	}
 	break;
 
 	case KEY2_SHORT_PRESS:
 	{
-		MotorRun();					 // Æô¶¯PWM
-		Motor.CtrlMode = SPEED_LOOP; // ÓÐ¸Ð£¬ËÙ¶È&µçÁ÷±Õ»·
+		MotorRun();					 // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = SPEED_LOOP; // ï¿½Ð¸Ð£ï¿½ï¿½Ù¶ï¿½&ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½
 	}
 	break;
 
 	case KEY2_DOUBLE_PRESS:
 	{
-		MotorRun();				   // Æô¶¯PWM
-		Motor.CtrlMode = CUR_LOOP; // ÓÐ¸Ð£¬µçÁ÷±Õ»·
+		MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = CUR_LOOP; // ï¿½Ð¸Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½
 	}
 	break;
 
 	case KEY2_LONG_PRESS:
 	{
-		MotorRun();				   // Æô¶¯PWM
-		Motor.CtrlMode = POS_LOOP; // ÓÐ¸Ð£¬Î»ÖÃ±Õ»·
+		MotorRun();				   // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = POS_LOOP; // ï¿½Ð¸Ð£ï¿½Î»ï¿½Ã±Õ»ï¿½
 	}
 	break;
 
@@ -421,15 +421,15 @@ void HmiTask(void)
 
 	case KEY3_DOUBLE_PRESS:
 	{
-		MotorRun();				  // Æô¶¯PWM
-		Motor.CtrlMode = IF_FLUX; // µÍËÙIF£¬¸ßËÙFLUX
+		MotorRun();				  // ï¿½ï¿½ï¿½ï¿½PWM
+		Motor.CtrlMode = IF_FLUX; // ï¿½ï¿½ï¿½ï¿½IFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½FLUX
 	}
 	break;
 
 	case KEY3_LONG_PRESS:
 	{
 		Motor.CtrlMode = TO_ZERO;
-		PostionToZeroDouble(); // ¶þ´Îµ÷Áã
+		PostionToZeroDouble(); // ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½
 		Motor.CtrlMode = STOP;
 	}
 	break;
