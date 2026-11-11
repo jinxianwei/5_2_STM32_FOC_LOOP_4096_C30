@@ -188,8 +188,7 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		case TO_ZERO:
 		{
 			Motor.CtrlMode = TO_ZERO;
-			PostionToZeroDouble(); // ���ε���
-			Motor.CtrlMode = STOP;
+			Motor.CtrlMode = PostionToZeroDouble() ? STOP : M_ERR;
 			break;
 		}
 		default:
@@ -429,8 +428,7 @@ void HmiTask(void)
 	case KEY3_LONG_PRESS:
 	{
 		Motor.CtrlMode = TO_ZERO;
-		PostionToZeroDouble(); // ���ε���
-		Motor.CtrlMode = STOP;
+		Motor.CtrlMode = PostionToZeroDouble() ? STOP : M_ERR;
 	}
 	break;
 

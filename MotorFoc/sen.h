@@ -7,6 +7,6 @@ void CurCloseloop(float IqRef, float Theta);
 void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp);
 void PosCloseloop(void);
 void PositionToZero(void);
-void PostionToZeroDouble(void);
+uint8_t PostionToZeroDouble(void);
 
 #endif

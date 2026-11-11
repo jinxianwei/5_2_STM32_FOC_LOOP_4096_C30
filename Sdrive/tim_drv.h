@@ -14,7 +14,7 @@
 
 typedef struct
 {
-    int32_t 	EncoderCnt;       //����������
+    volatile int32_t 	EncoderCnt;       //����������
     int32_t 	EncoLastCnt;
     uint16_t 	SpeedClock;
 }ENCOSPEED;
@@ -24,5 +24,6 @@ extern volatile uint32_t EncoderSpiErrorCount;
 
 void MotorAngleGet(void);
 void MotorSpeedGet(void);
+uint8_t MotorEncoderCalibrateElectricalZero(void);
 
 #endif 

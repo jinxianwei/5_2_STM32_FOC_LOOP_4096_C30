@@ -1,31 +1,14 @@
 #include "motor_ctrl.h"
 
-// µç»ú¹éÁã
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void PositionToZero(void)
 {
-    TIM1->CCER |= 0x5555;
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
-    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
-    HAL_Delay(100);
-
-    Svpwm.Ualpha = 1; // µ÷ÁãµçÑ¹
-    Svpwm.Ubeta = 0;
-    SvpwmCal((M_SVPWM)&Svpwm); // ½«AlphaºÍBetaµçÑ¹´øÈë¼ÆËãSVPWMµÄÕ¼¿Õ±È
-    HAL_Delay(1000);
-    TIM3->CNT = 0;     // Çå³ý±àÂëÆ÷µ±Ç°¼ÆÊýÖµ
-    Motor.E_theta = 0; // µç½Ç¶ÈÇåÁã
-    HAL_Delay(500);
-
-    TIM1->CCER &= 0xAAAA;
-    HAL_Delay(500);
+    if (!PostionToZeroDouble())
+        Motor.CtrlMode = M_ERR;
 }
 
-// ¶þ´Î¶¨Î»µ÷Áã
-void PostionToZeroDouble(void)
+// ï¿½ï¿½ï¿½Î¶ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+uint8_t PostionToZeroDouble(void)
 {
     TIM1->CCER |= 0x5555;
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -37,53 +20,49 @@ void PostionToZeroDouble(void)
 
     HAL_Delay(100);
 
-    Svpwm.Ualpha = 0.0f; // µ÷ÁãµçÑ¹
-    Svpwm.Ubeta = 0.5f;
-    SvpwmCal((M_SVPWM)&Svpwm); // ½«AlphaºÍBetaµçÑ¹´øÈë¼ÆËãSVPWMµÄÕ¼¿Õ±È
-    HAL_Delay(1000);
-
-    Svpwm.Ualpha = 0.5f; // µ÷ÁãµçÑ¹
+    Svpwm.Ualpha = 0.5f; // ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹
     Svpwm.Ubeta = 0.0f;
-    SvpwmCal((M_SVPWM)&Svpwm); // ½«AlphaºÍBetaµçÑ¹´øÈë¼ÆËãSVPWMµÄÕ¼¿Õ±È
+    SvpwmCal((M_SVPWM)&Svpwm); // ï¿½ï¿½Alphaï¿½ï¿½Betaï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SVPWMï¿½ï¿½Õ¼ï¿½Õ±ï¿½
     HAL_Delay(1000);
 
-    TIM3->CNT = 0; // Çå³ý±àÂëÆ÷µ±Ç°¼ÆÊýÖµ
-    Motor.E_theta = 0;
+    if (!MotorEncoderCalibrateElectricalZero())
+    {
+        Fault.bit.OffsetFlag = 1;
+        MotorStop();
+        return 0U;
+    }
 
-    HAL_Delay(1000);
-
-    TIM1->CCER &= 0xAAAA;
-    HAL_Delay(1000);
-
+    Fault.bit.OffsetFlag = 0;
     MotorStop();
+    return 1U;
 }
 
-// ÓÐ¸Ð,µçÁ÷±Õ»·
+// ï¿½Ð¸ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½
 void CurCloseloop(float IqRef, float Theta)
 {
-    pi_id.Ref = 0.0f; // id=0£¬dÖáµçÁ÷±Õ»·£¬Á¦¾Ø´ó
+    pi_id.Ref = 0.0f; // id=0ï¿½ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½
     pi_id.Fbk = Park.Ds;
-    PiController((M_PI_Control)&pi_id); // IdÖá±Õ»·
+    PiController((M_PI_Control)&pi_id); // Idï¿½ï¿½Õ»ï¿½
 
     pi_iq.Ref = IqRef;
     pi_iq.Fbk = Park.Qs;
-    PiController((M_PI_Control)&pi_iq); // IqÖá±Õ»·
+    PiController((M_PI_Control)&pi_iq); // Iqï¿½ï¿½Õ»ï¿½
 
     Ipark.Theta = Theta;
     Ipark.Ds = pi_id.Out;
     Ipark.Qs = pi_iq.Out;
-    IPARK_Cale((M_IPARK)&Ipark); // IPARKº¯Êý¼ÆËã
+    IPARK_Cale((M_IPARK)&Ipark); // IPARKï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
-// UseRamp: 1-Ê¹ÓÃÌÝ¶È¼ÆËã£¨ÓÃÓÚ´¿ËÙ¶ÈÄ£Ê½£©, 0-Ö±½Ó¸ø¶¨£¨ÓÃÓÚÎ»ÖÃÄ£Ê½£©
+// UseRamp: 1-Ê¹ï¿½ï¿½ï¿½Ý¶È¼ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ù¶ï¿½Ä£Ê½ï¿½ï¿½, 0-Ö±ï¿½Ó¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ä£Ê½ï¿½ï¿½
 void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
 {
     float final_spd_ref = 0.0f;
 
     if (UseRamp)
     {
-		SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;	 // ¶¨ÒåËÙ¶ÈµÄÌÝ¶ÈÖµ
-		SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER; // ¶¨ÒåËÙ¶ÈµÄÌÝ¶ÈÊ±¼ä
+		SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;	 // ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶Èµï¿½ï¿½Ý¶ï¿½Öµ
+		SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER; // ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶Èµï¿½ï¿½Ý¶ï¿½Ê±ï¿½ï¿½
         SpdRefGXieLv.XieLv_X = SpeedRef;
         SpdRefGXieLv.Timer_Count++;
         if (my_abs(pi_spd.Ref - pi_spd.Fbk) >= 1000)
@@ -99,10 +78,10 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
     else
     {
         final_spd_ref = (float)SpeedRef;
-        final_spd_ref = Limit_Sat(final_spd_ref, 100, -100);//Î»ÖÃ»·ËÙ¶ÈÏÞÖÆ
+        final_spd_ref = Limit_Sat(final_spd_ref, 100, -100);//Î»ï¿½Ã»ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
-    // ËÙ¶È»·¼ÆËãÆµÂÊ¿ØÖÆ
+    // ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ê¿ï¿½ï¿½ï¿½
     if (++Para.SpeedCalTime >= SPEED_CNT)
     {
         Para.SpeedCalTime = 0;
@@ -110,7 +89,7 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
         pi_spd.Ref = final_spd_ref * Motor.P;
         pi_spd.Fbk = Motor.speed_E_rpm;
 
-        PiController((M_PI_Control)&pi_spd); // ËÙ¶ÈPI¼ÆËã
+        PiController((M_PI_Control)&pi_spd); // ï¿½Ù¶ï¿½PIï¿½ï¿½ï¿½ï¿½
 
         pi_spd.OutF = pi_spd.OutF * LPF_I_RUN_B + pi_spd.Out * LPF_I_RUN_A;
     }
@@ -118,12 +97,12 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
     CurCloseloop(pi_spd.OutF, Motor.E_theta);
 }
 
-// ÓÐ¸Ð£¬Î»ÖÃ»·
+// ï¿½Ð¸Ð£ï¿½Î»ï¿½Ã»ï¿½
 #define ENC_MIN 1
 #define ENC_MAX 3999
 #define ENC_RANGE (ENC_MAX - ENC_MIN + 1) // 3999
-#define POS_MAX_SPEED 3000                // Î»ÖÃ»·Êä³öµÄ×î´ó×ªËÙÏÞÖÆ (RPM)
-#define POS_I_LIMIT 500                   // Î»ÖÃ»·»ý·ÖÏÞ·ù£¬·ÀÖ¹¹ý³å
+#define POS_MAX_SPEED 3000                // Î»ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (RPM)
+#define POS_I_LIMIT 500                   // Î»ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½
 
 void PosCloseloop(void)
 {
@@ -136,7 +115,7 @@ void PosCloseloop(void)
     {
         PosLoopDivCnt = 0;
 
-        // Ä¿±êÎ»ÖÃÓ³Éä (Para.PosRef: 0..4095 -> mapped: 3999..1)
+        // Ä¿ï¿½ï¿½Î»ï¿½ï¿½Ó³ï¿½ï¿½ (Para.PosRef: 0..4095 -> mapped: 3999..1)
         uint32_t t = ((uint32_t)Para.PosRef * (ENC_RANGE - 1)) >> 12;
         uint16_t mapped = (uint16_t)(ENC_MAX - t);
         Pos.P_Ref = (int32_t)mapped;
@@ -148,19 +127,19 @@ void PosCloseloop(void)
         else if (err < -half)
             err += ENC_RANGE;
 
-        // ±ÈÀýÏî
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         float up = Pos.Kp * (float)err;
 
-        // »ý·ÖÏî
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /*
         Pos.P_Integral += Pos.Ki * (float)err;
-        Pos.P_Integral = Limit_Sat(Pos.P_Integral, POS_I_LIMIT, -POS_I_LIMIT); // ¿¹±¥ºÍ
+        Pos.P_Integral = Limit_Sat(Pos.P_Integral, POS_I_LIMIT, -POS_I_LIMIT); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         SpeedRef = up + Pos.P_Integral;
         */
 
-        SpeedRef = up; // Ä¿Ç°½öÊ¹ÓÃ P ¿ØÖÆ
+        SpeedRef = up; // Ä¿Ç°ï¿½ï¿½Ê¹ï¿½ï¿½ P ï¿½ï¿½ï¿½ï¿½
 
-        // Êä³öÏÞ·ù£º·ÀÖ¹Î»ÖÃÆ«²î¹ý´óµ¼ÖÂ¸ø³öµÄËÙ¶È²Î¿¼ÖµÒç³ö»ò¹ý¿ì
+        // ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹Î»ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È²Î¿ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Pos.P_Out = (int16_t)Limit_Sat(SpeedRef, POS_MAX_SPEED, -POS_MAX_SPEED);
     }
 

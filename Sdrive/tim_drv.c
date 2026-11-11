@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
-* „1¤70‘4„1¤7„1¤7„1¤7„1¤7„1¤7tim_drv.c
-* „1¤7„1¤7  „1¤71°3„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7
-* „1¤7„1¤7  „1¤713„1¤72024/06/20
-* 0»5  „1¤7„1¤7„1¤7„1¤7„1¤7„1¤70µ2„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7
+* ï¿½1ï¿½7ï¿½0ï¿½4ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7tim_drv.c
+* ï¿½1ï¿½7ï¿½1ï¿½7  ï¿½1ï¿½7ï¿½1ï¿½3ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7
+* ï¿½1ï¿½7ï¿½1ï¿½7  ï¿½1ï¿½7ï¿½1ï¿½3ï¿½1ï¿½72024/06/20
+* ï¿½0ï¿½5  ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½2ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7
 ***********************************************************************
 */
 
@@ -16,6 +16,8 @@ extern SPI_HandleTypeDef hspi1;
 
 ENCOSPEED EnCoSpeed;
 volatile uint32_t EncoderSpiErrorCount;
+static volatile float EncoderElectricalOffset;
+static volatile uint8_t EncoderAngleValid;
 
 static uint8_t TLE5012_WaitForFlag(uint32_t flag, uint8_t set, uint32_t start)
 {
@@ -112,7 +114,7 @@ void MotorSpeedGet(void)
 
 	Motor.speed_M_rpm = SpeedMrpmFil;
 
-	Motor.speed_E_rpm = Motor.speed_M_rpm * Motor.P; // ï¿½ï¿½ï¿½ï¿½Ù¶ï¿? = ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ù¶ï¿½ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	Motor.speed_E_rpm = Motor.speed_M_rpm * Motor.P; // ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½? = ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ù¶ï¿½ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	EnCoSpeed.EncoLastCnt = EnCoSpeed.EncoderCnt;
 }
 
@@ -124,30 +126,47 @@ void MotorAngleGet(void)
 		return;
 
 	EnCoSpeed.EncoderCnt = (int32_t)rawAngle;
+	EncoderAngleValid = 1U;
 	Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
-	 				(float)TLE5012_COUNTS_PER_REVOLUTION * Motor.P;
-//	Motor.E_theta = (float)EnCoSpeed.EncoderCnt * PIX2 /
-//					(float)TLE5012_COUNTS_PER_REVOLUTION;
+					(float)TLE5012_COUNTS_PER_REVOLUTION * Motor.P +
+					EncoderElectricalOffset;
 
 	while (Motor.E_theta >= PIX2)
 		Motor.E_theta -= PIX2;
+	while (Motor.E_theta < 0.0f)
+		Motor.E_theta += PIX2;
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // „1¤7„1¤70µ2„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7§Ø0Ð91…3„1¤7„1¤7„1¤7„1¤7„1¤7(htim:„1¤7„1¤70µ2„1¤7„1¤7„1¤7„1¤7„1¤7)
+uint8_t MotorEncoderCalibrateElectricalZero(void)
 {
-	// update „1¤70†4„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7
-	if (htim == (&htim1)) // FOC„1¤7„1¤7„1¤7„1¤7		20KHz
+	if ((EncoderAngleValid == 0U) || (Motor.P == 0U))
+		return 0U;
+
+	EncoderElectricalOffset = -((float)EnCoSpeed.EncoderCnt * PIX2 /
+								(float)TLE5012_COUNTS_PER_REVOLUTION * Motor.P);
+	while (EncoderElectricalOffset < 0.0f)
+		EncoderElectricalOffset += PIX2;
+	while (EncoderElectricalOffset >= PIX2)
+		EncoderElectricalOffset -= PIX2;
+
+	return 1U;
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½2ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½Ø0ï¿½9ï¿½1ï¿½3ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7(htim:ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½2ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7)
+{
+	// update ï¿½1ï¿½7ï¿½0ï¿½4ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7
+	if (htim == (&htim1)) // FOCï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7		20KHz
 	{
-		GetAdc(); // „1¤7„1¤70§0„1¤7„1¤7„1¤7„1¤7
-		AxisDq(); // „1¤7„1¤7„1¤7„1¤7„1¤7„1¤7ÈÎ // TODO: „1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7„1¤7MotorAngleGet(),„1¤7„1¤7„1¤7„1¤7„1¤70¢8„1¤7
+		GetAdc(); // ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½0ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7
+		AxisDq(); // ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½ï¿½ // TODO: ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7MotorAngleGet(),ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½8ï¿½1ï¿½7
 
 		EnCoSpeed.SpeedClock++;
-		if (EnCoSpeed.SpeedClock == SPEED_CNT) // „1¤7„1¤7„1¤7„1¤70Ý5„1¤7¦Å„1¤7„1¤70û8„1¤71‰9„1¤7„1¤70È3„1¤7„1¤7„1¤7„1¤7„1¤701„1¤7„1¤7„1¤7¦Ã0®9„1¤7„1¤7„1¤7
+		if (EnCoSpeed.SpeedClock == SPEED_CNT) // ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½5ï¿½1ï¿½7ï¿½Å„1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½8ï¿½1ï¿½7ï¿½1ï¿½9ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½3ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½1ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½Ã0ï¿½9ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7
 		{
 			EnCoSpeed.SpeedClock %= SPEED_CNT;
-			MotorSpeedGet(); // „1¤71‹80©6„1¤70§0
+			MotorSpeedGet(); // ï¿½1ï¿½7ï¿½1ï¿½8ï¿½0ï¿½6ï¿½1ï¿½7ï¿½0ï¿½0
 		}
 
-		MotorModeSel(); // „1¤7„1¤7„1¤7„1¤7000¶40Ô5„1¤7„1¤7
+		MotorModeSel(); // ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½1ï¿½7ï¿½0ï¿½0ï¿½0ï¿½4ï¿½0ï¿½5ï¿½1ï¿½7ï¿½1ï¿½7
 	}
 }
