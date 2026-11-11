@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
- * ÎÄ¼şÃû£ºkey_drv.c
- * ×÷  Õß£º???
- * ÈÕ  ÆÚ£º2024/09/26
- * Ëµ  Ã÷£º°´¼üÇı¶¯
+ * æ–‡ä»¶åï¼škey_drv.c
+ * ä½œ  è€…ï¼š???
+ * æ—¥  æœŸï¼š2024/09/26
+ * è¯´  æ˜ï¼šæŒ‰é”®é©±åŠ¨
 ***********************************************************************
 */
 #include "key_drv.h"
@@ -26,15 +26,15 @@ static Key_GPIO_t g_gpioList[] =
 
 typedef enum
 {
-	KEY_RELEASE = 0,         // ÊÍ·ÅËÉ¿ª
-	KEY_CONFIRM,             // Ïû¶¶È·ÈÏ
-	KEY_SHORTPRESS,          // ¶Ì°´
-	KEY_LONGPRESS            // ³¤°´
+	KEY_RELEASE = 0,         // é‡Šæ”¾æ¾å¼€
+	KEY_CONFIRM,             // æ¶ˆæŠ–ç¡®è®¤
+	KEY_SHORTPRESS,          // çŸ­æŒ‰
+	KEY_LONGPRESS            // é•¿æŒ‰
 } KEY_STATE;
 
-#define CONFIRM_TIME                 10       // °´¼üÏû¶¶Ê±¼ä´°10ms
-#define DOUBLE_CLICK_INTERVAL_TIME   300      // Á½´ÎÌ§ÆğÊ±¼ä´°300ms£¬ÓÃÀ´ÅĞ¶ÏÊÇ·ñË«»÷
-#define LONGPRESS_TIME               2000     // ³¤°´Ê±¼ä´°2000ms
+#define CONFIRM_TIME                 10       // æŒ‰é”®æ¶ˆæŠ–æ—¶é—´çª—10ms
+#define DOUBLE_CLICK_INTERVAL_TIME   300      // ä¸¤æ¬¡æŠ¬èµ·æ—¶é—´çª—300msï¼Œç”¨æ¥åˆ¤æ–­æ˜¯å¦åŒå‡»
+#define LONGPRESS_TIME               2000     // é•¿æŒ‰æ—¶é—´çª—2000ms
 
 typedef struct
 {
@@ -48,7 +48,7 @@ static Key_Info_t g_keyInfo[KEY_NUM_MAX];
 
 /**
 ***********************************************************
-* @brief °´¼üÓ²¼ş³õÊ¼»¯
+* @brief æŒ‰é”®ç¡¬ä»¶åˆå§‹åŒ–
 * @param
 * @return 
 ***********************************************************
@@ -77,10 +77,10 @@ static uint8_t KeyScan(uint8_t keyIndex)
 
 	switch (g_keyInfo[keyIndex].keyState)
 	{
-		case KEY_RELEASE:                                          //  ÊÍ·Å×´Ì¬£ºÅĞ¶ÏÓĞÎŞ°´¼ü°´ÏÂ
-			if (!keyPress)                                         //  ÓĞ°´¼ü°´ÏÂ
+		case KEY_RELEASE:                                          //  é‡Šæ”¾çŠ¶æ€ï¼šåˆ¤æ–­æœ‰æ— æŒ‰é”®æŒ‰ä¸‹
+			if (!keyPress)                                         //  æœ‰æŒ‰é”®æŒ‰ä¸‹
 			{ 
-				g_keyInfo[keyIndex].keyState = KEY_CONFIRM;        //  »ñÈ¡ÏµÍ³ÔËĞĞÊ±¼ä
+				g_keyInfo[keyIndex].keyState = KEY_CONFIRM;        //  è·å–ç³»ç»Ÿè¿è¡Œæ—¶é—´
 				g_keyInfo[keyIndex].firstIoChangeSysTime = HAL_GetTick();
 				break;
 			}
@@ -91,7 +91,7 @@ static uint8_t KeyScan(uint8_t keyIndex)
 				if (curSysTime - g_keyInfo[keyIndex].firstReleaseSysTime > DOUBLE_CLICK_INTERVAL_TIME)
 				{
 					g_keyInfo[keyIndex].singleClickNum = 0;
-					return (keyIndex + 1); //  ·µ»Øµ¥»÷°´¼üÂëÖµ£¬ËÄ¸ö°´¼ü¶Ì°´¶ÔÓ¦0x01, 0x02, 0x03, 0x04
+					return (keyIndex + 1); //  è¿”å›å•å‡»æŒ‰é”®ç å€¼ï¼Œå››ä¸ªæŒ‰é”®çŸ­æŒ‰å¯¹åº”0x01, 0x02, 0x03, 0x04
 				}
 			}
 
@@ -101,7 +101,7 @@ static uint8_t KeyScan(uint8_t keyIndex)
 			if (!keyPress)
 			{
 				curSysTime = HAL_GetTick();
-				if (curSysTime - g_keyInfo[keyIndex].firstIoChangeSysTime > CONFIRM_TIME) //  ³¬¹ıÊ±¼ä´°£¬ÇĞ»»µ½¶Ì°´
+				if (curSysTime - g_keyInfo[keyIndex].firstIoChangeSysTime > CONFIRM_TIME) //  è¶…è¿‡æ—¶é—´çª—ï¼Œåˆ‡æ¢åˆ°çŸ­æŒ‰
 				{
 					g_keyInfo[keyIndex].keyState = KEY_SHORTPRESS;
 				}
@@ -112,7 +112,7 @@ static uint8_t KeyScan(uint8_t keyIndex)
 			}
 			break;
 			
-		case KEY_SHORTPRESS:           //  ¶Ì°´×´Ì¬£º¼ÌĞøÅĞ¶¨ÊÇ¶Ì°´£¬»¹ÊÇË«»÷£¬»¹ÊÇ³¤°´
+		case KEY_SHORTPRESS:           //  çŸ­æŒ‰çŠ¶æ€ï¼šç»§ç»­åˆ¤å®šæ˜¯çŸ­æŒ‰ï¼Œè¿˜æ˜¯åŒå‡»ï¼Œè¿˜æ˜¯é•¿æŒ‰
 			if (keyPress)
 			{
 				g_keyInfo[keyIndex].keyState = KEY_RELEASE;
@@ -126,10 +126,10 @@ static uint8_t KeyScan(uint8_t keyIndex)
 				else
 				{
 					curSysTime = HAL_GetTick();
-					if (curSysTime - g_keyInfo[keyIndex].firstReleaseSysTime <= DOUBLE_CLICK_INTERVAL_TIME) //  ³¬¹ıË«»÷Ê±¼ä¼ä¸ô´°£¬·µ»ØË«»÷ÂëÖµ
+					if (curSysTime - g_keyInfo[keyIndex].firstReleaseSysTime <= DOUBLE_CLICK_INTERVAL_TIME) //  è¶…è¿‡åŒå‡»æ—¶é—´é—´éš”çª—ï¼Œè¿”å›åŒå‡»ç å€¼
 					{
 						g_keyInfo[keyIndex].singleClickNum = 0;
-						return (keyIndex + 0x51); //  ·µ»Ø°´¼üÂëÖµ£¬ËÄ¸ö°´¼üË«»÷¶ÔÓ¦0x51, 0x52, 0x53, 0x54
+						return (keyIndex + 0x51); //  è¿”å›æŒ‰é”®ç å€¼ï¼Œå››ä¸ªæŒ‰é”®åŒå‡»å¯¹åº”0x51, 0x52, 0x53, 0x54
 					}
 				}
 			}
@@ -146,7 +146,7 @@ static uint8_t KeyScan(uint8_t keyIndex)
 			if (keyPress)
 			{
 				g_keyInfo[keyIndex].keyState = KEY_RELEASE;
-				return (keyIndex + 0x81); //·µ»Ø°´¼üÂëÖµ£¬ËÄ¸ö°´¼ü³¤°´¶ÔÓ¦0x81, 0x82, 0x83, 0x84
+				return (keyIndex + 0x81); //è¿”å›æŒ‰é”®ç å€¼ï¼Œå››ä¸ªæŒ‰é”®é•¿æŒ‰å¯¹åº”0x81, 0x82, 0x83, 0x84
 			}
 			break;
 		default:
@@ -158,10 +158,10 @@ static uint8_t KeyScan(uint8_t keyIndex)
 
 /**
 ***********************************************************
-* @brief »ñÈ¡°´¼üÂëÖµ
+* @brief è·å–æŒ‰é”®ç å€¼
 * @param
-* @return ËÄ¸ö°´¼üÂëÖµ£¬¶Ì°´0x01 0x02 0x03 0x04, Ë«»÷0x51 
-          0x52 0x53 0x54, ³¤°´0x81 0x82 0x83 0x84
+* @return å››ä¸ªæŒ‰é”®ç å€¼ï¼ŒçŸ­æŒ‰0x01 0x02 0x03 0x04, åŒå‡»0x51 
+          0x52 0x53 0x54, é•¿æŒ‰0x81 0x82 0x83 0x84
 ***********************************************************
 */
 uint8_t GetKeyVal(void)

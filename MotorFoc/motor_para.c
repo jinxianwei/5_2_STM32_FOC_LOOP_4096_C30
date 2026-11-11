@@ -1,6 +1,6 @@
 #include "motor_ctrl.h"
 
-// Ç¿ÍÏµçÑ¹±ä»¯±í 0.5V
+// å¼ºæ‹–ç”µå‹å˜åŒ–è¡¨ 0.5V
 /*cos(0-360)*/
 const float ualpha_tab[360] = {
 	0.500000f, 0.499924f, 0.499695f, 0.499315f, 0.498782f, 0.498097f, 0.497261f, 0.496273f, 0.495134f, 0.493844f,
@@ -133,7 +133,7 @@ const float atanTab[512] = {
 	0.774518f, 0.775517f, 0.776514f, 0.777509f, 0.778502f, 0.779493f, 0.780482f, 0.781469f, 0.782454f, 0.783437f,
 	0.784419f, 0.785398f};
 
-/* ½¨Á¢·´ÕıÇĞ±í¼Ó¿ì¼ÆËãËÙ¶È */
+/* å»ºç«‹åæ­£åˆ‡è¡¨åŠ å¿«è®¡ç®—é€Ÿåº¦ */
 float my_atan2(float x, float y)
 {
 	unsigned short idx;
@@ -161,20 +161,20 @@ float my_atan2(float x, float y)
 		atan_val = -atanTab[idx] - 0.785398f;
 	}
 
-	if (x < 0) // µÚ¶ş, µÚÈıÏóÏŞ
+	if (x < 0) // ç¬¬äºŒ, ç¬¬ä¸‰è±¡é™
 	{
 		return atan_val + 3.141593f;
 	}
 	else
 	{
-		if (y > 0) // µÚÒ»ÏóÏŞ
+		if (y > 0) // ç¬¬ä¸€è±¡é™
 			return atan_val;
-		else // µÚËÄÏóÏŞ
+		else // ç¬¬å››è±¡é™
 			return atan_val + 6.283185f;
 	}
 }
 
-// ¿ìËÙ·´ÕıÇĞ¼ÆËã
+// å¿«é€Ÿåæ­£åˆ‡è®¡ç®—
 float my_atan(float x)
 {
 	unsigned short idx;
@@ -204,7 +204,7 @@ float my_atan(float x)
 	return atan_val;
 }
 
-// ·ûºÅº¯Êı
+// ç¬¦å·å‡½æ•°
 int8_t Sign(float x)
 {
 	if (x > 0)
@@ -214,7 +214,7 @@ int8_t Sign(float x)
 	else
 		return 0;
 }
-// ¾ø¶ÔÖµ¼ÆËã
+// ç»å¯¹å€¼è®¡ç®—
 float my_abs(float x)
 {
 	if (x >= 0)
@@ -222,7 +222,7 @@ float my_abs(float x)
 	else
 		return -x;
 }
-// ±¥ºÍº¯Êı
+// é¥±å’Œå‡½æ•°
 float Sat(float s, float delta)
 {
 	if (s > delta)
@@ -241,11 +241,11 @@ float my_max(float a, float b)
 		return b;
 }
 
-// ÊµÏÖln(x) µÄ¼ÆËã
+// å®ç°ln(x) çš„è®¡ç®—
 /*
 double myln(double a)
 {
-   int N = 15;//È¡ÁËÇ°15+1ÏîÀ´¹ÀËã
+   int N = 15;//å–äº†å‰15+1é¡¹æ¥ä¼°ç®—
    int k,nk;
    double x,xx,y;
    x = (a-1)/(a+1);
@@ -262,7 +262,7 @@ double myln(double a)
 }
 */
 
-// µç»ú²ÎÊı³õÊ¼»¯
+// ç”µæœºå‚æ•°åˆå§‹åŒ–
 void MotorInit(void)
 {
 	Para.SpdSenKp = 0.001f;
@@ -272,19 +272,19 @@ void MotorInit(void)
 	Pos.Kp = 0.3;
 	//Para.PosRef = 1000;
 
-	Motor.P = MOTOR_P;	 // µç»ú¼«¶ÔÊı
-	Motor.Rs = MOTOR_Rs; // µç»úµç×è
-	Motor.Ls = MOTOR_Ls; // µç»úÏàµç¸Ğ
-	//	Motor.Ib = 3;												//µç»úµÄ¶î¶¨ÏàµçÁ÷
-	//	Motor.Vb = 7;												//µç»ú¶î¶¨ÏàµçÑ¹  Ä¸ÏßµçÑ¹*sqrt(3)/3
-	PllSmoPara.Kp = 540.35f;  // ×èÄá±ÈÎª1£¬´ø¿íÎª43Hz		Kp=2¦Æ¦Ø0			¦Ø0=2pi
-	PllSmoPara.Ki = 72995.6f; // Ki=(¦Ø0)^2
-	PllHfiPara.Kp = 540.35f;  // ×èÄá±ÈÎª1£¬´ø¿íÎª50Hz		Kp=2¦Æ¦Ø0/k2			¦Ø0=2pi
-	PllHfiPara.Ki = 72995.6f; // Ki=(¦Ø0)^2/k2
+	Motor.P = MOTOR_P;	 // ç”µæœºæå¯¹æ•°
+	Motor.Rs = MOTOR_Rs; // ç”µæœºç”µé˜»
+	Motor.Ls = MOTOR_Ls; // ç”µæœºç›¸ç”µæ„Ÿ
+	//	Motor.Ib = 3;												//ç”µæœºçš„é¢å®šç›¸ç”µæµ
+	//	Motor.Vb = 7;												//ç”µæœºé¢å®šç›¸ç”µå‹  æ¯çº¿ç”µå‹*sqrt(3)/3
+	PllSmoPara.Kp = 540.35f;  // é˜»å°¼æ¯”ä¸º1ï¼Œå¸¦å®½ä¸º43Hz		Kp=2Î¶Ï‰0			Ï‰0=2pi
+	PllSmoPara.Ki = 72995.6f; // Ki=(Ï‰0)^2
+	PllHfiPara.Kp = 540.35f;  // é˜»å°¼æ¯”ä¸º1ï¼Œå¸¦å®½ä¸º50Hz		Kp=2Î¶Ï‰0/k2			Ï‰0=2pi
+	PllHfiPara.Ki = 72995.6f; // Ki=(Ï‰0)^2/k2
 
-	SensorLess.Speed_Max = 2000;   // ¶¨ÒåÎŞ¸ĞËÙ¶ÈÄ¿±êÖµ
-	SensorLess.w1 = 250 * Motor.P; // µÍËÙÁÙ½çÖµ
-	SensorLess.w2 = 350 * Motor.P; // ¸ßËÙÁÙ½çÖµ
+	SensorLess.Speed_Max = 2000;   // å®šä¹‰æ— æ„Ÿé€Ÿåº¦ç›®æ ‡å€¼
+	SensorLess.w1 = 250 * Motor.P; // ä½é€Ÿä¸´ç•Œå€¼
+	SensorLess.w2 = 350 * Motor.P; // é«˜é€Ÿä¸´ç•Œå€¼
 
 	// Para.SpeedRef = 2000;
 	// Para.CurRef = 0.5f;
@@ -292,7 +292,7 @@ void MotorInit(void)
 
 	FluxInit(&flux);
 
-	//	SMO_Init();													//»¬Ä¤²ÎÊı³õÊ¼»¯
-	PiParaInit();													  // PID²ÎÊı³õÊ¼»¯
-	IirButterworthCoefficientInit(WE_IIR_LPF_Coeff, &WE_IIR_LPF_Par); // µÍÍ¨ÂË²¨Æ÷²ÎÊı³õÊ¼»¯
+	//	SMO_Init();													//æ»‘è†œå‚æ•°åˆå§‹åŒ–
+	PiParaInit();													  // PIDå‚æ•°åˆå§‹åŒ–
+	IirButterworthCoefficientInit(WE_IIR_LPF_Coeff, &WE_IIR_LPF_Par); // ä½é€šæ»¤æ³¢å™¨å‚æ•°åˆå§‹åŒ–
 }

@@ -7,13 +7,13 @@ typedef union
 {
     struct
     {
-        unsigned OverVbusFlag : 1;  // ¹ıÑ¹
-        unsigned UnderVbusFlag : 1; // Ç·Ñ¹
-        unsigned OverTempFlag : 1;  // ¹ıÎÂ
-        unsigned OverIBUSFlag : 1;  // ¹ıÁ÷
-        unsigned LockedFlag : 1;    // ¶Â×ª
-        unsigned OverSpeedFlag : 1; // ³¬ËÙ
-        unsigned OffsetFlag : 1;    // Ğ£×¼Òì³£
+        unsigned OverVbusFlag : 1;  // è¿‡å‹
+        unsigned UnderVbusFlag : 1; // æ¬ å‹
+        unsigned OverTempFlag : 1;  // è¿‡æ¸©
+        unsigned OverIBUSFlag : 1;  // è¿‡æµ
+        unsigned LockedFlag : 1;    // å µè½¬
+        unsigned OverSpeedFlag : 1; // è¶…é€Ÿ
+        unsigned OffsetFlag : 1;    // æ ¡å‡†å¼‚å¸¸
     } bit;
     uint16_t Byte;
 } DiagFlag;

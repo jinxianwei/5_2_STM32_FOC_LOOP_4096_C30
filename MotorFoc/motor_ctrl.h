@@ -20,38 +20,38 @@
 
 typedef struct
 {
-    float M_theta;             // µç»ú×ª×Ó»úĞµ½Ç¶È
-    float E_theta;             // µç»ú×ª×Óµç½Ç¶È
-    float speed_M_rpm;         // µç»úµ±Ç°»úĞµ½ÇËÙ¶È	rpm/min
-    float speed_E_rpm;         // µç»úµ±Ç°µç½ÇËÙ¶È		rpm/min
-    volatile uint8_t CtrlMode; // µç»ú¿ØÖÆÄ£Ê½
-    float Rs;                  // µç»úµÄÏàµç×è
-    float Ls;                  // µç»úµÄÏàµç¸Ğ
-    float Ib;                  // µç»úÏàµçÁ÷
-    float Vb;                  // µç»úÏàµçÑ¹
-    uint8_t P;                 // µç»ú¼«¶ÔÊı
+    float M_theta;             // ç”µæœºè½¬å­æœºæ¢°è§’åº¦
+    float E_theta;             // ç”µæœºè½¬å­ç”µè§’åº¦
+    float speed_M_rpm;         // ç”µæœºå½“å‰æœºæ¢°è§’é€Ÿåº¦	rpm/min
+    float speed_E_rpm;         // ç”µæœºå½“å‰ç”µè§’é€Ÿåº¦		rpm/min
+    volatile uint8_t CtrlMode; // ç”µæœºæ§åˆ¶æ¨¡å¼
+    float Rs;                  // ç”µæœºçš„ç›¸ç”µé˜»
+    float Ls;                  // ç”µæœºçš„ç›¸ç”µæ„Ÿ
+    float Ib;                  // ç”µæœºç›¸ç”µæµ
+    float Vb;                  // ç”µæœºç›¸ç”µå‹
+    uint8_t P;                 // ç”µæœºæå¯¹æ•°
 } motor_p;
 
-#define MOTOR_DEFAULTS {0.0f, 0.0f, 0.0f, 0.0f, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0} // µç»ú×´Ì¬²ÎÊı³õÊ¼»¯
+#define MOTOR_DEFAULTS {0.0f, 0.0f, 0.0f, 0.0f, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0} // ç”µæœºçŠ¶æ€å‚æ•°åˆå§‹åŒ–
 
 typedef struct
 {
-    volatile uint8_t Observer; // ÎŞ¸Ğ¿ØÖÆÊ±µÄ¹Û²âÆ÷Ñ¡Ôñ£¬1¡ª¡ªHFI£»3¡ª¡ªSMO
+    volatile uint8_t Observer; // æ— æ„Ÿæ§åˆ¶æ—¶çš„è§‚æµ‹å™¨é€‰æ‹©ï¼Œ1â€”â€”HFIï¼›3â€”â€”SMO
     volatile uint8_t Observer_last;
-    volatile float theta;     // ¹Û²âÆ÷½Ç¶È
-    volatile float Omega;     // ¹Û²âÆ÷µç½ÇËÙ¶È£¬»¡¶ÈÖÆ		rad/s
-    volatile float Speed_Fbk; // ¹Û²âÆ÷ËÙ¶È·´À¡Öµ
-    float Speed_Ref;          // ¹Û²âÆ÷ËÙ¶ÈÄ¿±êÖµ
-    int16_t Speed_Max;        // ¹Û²âÆ÷Ä¿±êËÙ¶È×î´óÖµ
-    int16_t w1;               // ¹Û²âÆ÷µÍËÙÓë¹ı¶É½×¶ÎÁÙ½çÖµ
-    int16_t w2;               // ¹Û²âÆ÷¸ßËÙÓë¹ı¶É½×¶ÎÁÙ½çÖµ
+    volatile float theta;     // è§‚æµ‹å™¨è§’åº¦
+    volatile float Omega;     // è§‚æµ‹å™¨ç”µè§’é€Ÿåº¦ï¼Œå¼§åº¦åˆ¶		rad/s
+    volatile float Speed_Fbk; // è§‚æµ‹å™¨é€Ÿåº¦åé¦ˆå€¼
+    float Speed_Ref;          // è§‚æµ‹å™¨é€Ÿåº¦ç›®æ ‡å€¼
+    int16_t Speed_Max;        // è§‚æµ‹å™¨ç›®æ ‡é€Ÿåº¦æœ€å¤§å€¼
+    int16_t w1;               // è§‚æµ‹å™¨ä½é€Ÿä¸è¿‡æ¸¡é˜¶æ®µä¸´ç•Œå€¼
+    int16_t w2;               // è§‚æµ‹å™¨é«˜é€Ÿä¸è¿‡æ¸¡é˜¶æ®µä¸´ç•Œå€¼
 } Sensorless_Control;
 
-#define Sensorless_DEFAULTS {1, 1, 0, 0, 0, 0, 0, 0, 0} // ¹Û²âÆ÷ÈÚºÏ²ÎÊı³õÊ¼»¯
+#define Sensorless_DEFAULTS {1, 1, 0, 0, 0, 0, 0, 0, 0} // è§‚æµ‹å™¨èåˆå‚æ•°åˆå§‹åŒ–
 
 typedef struct
-{                  // Ö¸Áî²ÎÊıµÄĞ±ÂÊ´¦Àí
-    float XieLv_X; // Ö¸Áî²ÎÊıĞ±ÂÊÊäÈë±äÁ¿x
+{                  // æŒ‡ä»¤å‚æ•°çš„æ–œç‡å¤„ç†
+    float XieLv_X; // æŒ‡ä»¤å‚æ•°æ–œç‡è¾“å…¥å˜é‡x
     float XieLv_Y;
     float XieLv_Grad;
     uint8_t Timer_Count;
@@ -62,15 +62,15 @@ typedef struct
 
 typedef struct
 {
-    uint16_t IfFrq;       // Ç¿ÍÏÆµÂÊ
-    uint16_t IfAngle;     // Ç¿ÍÏ½Ç¶ÈÖµ
-    uint16_t Locktime;    // ¶Â×ª¼ì²âÊ±¼ä
-    uint8_t SpeedCalTime; // ËÙ¶È¼ÆËãÊ±¼ä
-    float IfTheta;        // Ç¿ÍÏ½Ç¶È
-    float IfCurrent;      // Ç¿ÍÏµçÁ÷
-    int16_t SpeedRef;     // Ä¿±êËÙ¶È
-    float CurRef;         // Ä¿±êµçÁ÷
-    int32_t PosRef;       // Ä¿±êÎ»ÖÃ
+    uint16_t IfFrq;       // å¼ºæ‹–é¢‘ç‡
+    uint16_t IfAngle;     // å¼ºæ‹–è§’åº¦å€¼
+    uint16_t Locktime;    // å µè½¬æ£€æµ‹æ—¶é—´
+    uint8_t SpeedCalTime; // é€Ÿåº¦è®¡ç®—æ—¶é—´
+    float IfTheta;        // å¼ºæ‹–è§’åº¦
+    float IfCurrent;      // å¼ºæ‹–ç”µæµ
+    int16_t SpeedRef;     // ç›®æ ‡é€Ÿåº¦
+    float CurRef;         // ç›®æ ‡ç”µæµ
+    int32_t PosRef;       // ç›®æ ‡ä½ç½®
     double RpmCmd;
     float FluxErr;
     float HfiSmoErr;
@@ -123,25 +123,25 @@ extern const float ubeta_tab[360];
 extern const float ualpha_tab[360];
 extern Sensorless_Control SensorLess;
 
-void GradXieLv(p_GXieLv pv); // Ìİ¶È¼Ó¼õ
-void SvpwmCal(M_SVPWM pv);   // SVPWMµ÷ÖÆËã·¨º¯Êı
-void MotorStop(void);        // µç»úÍ£Ö¹
-void MotorRun(void);         // µç»úÆô¶¯
-void AxisDq(void);           // ×ø±êÖá±ä»»
-void FocSvpwm(void);         // SVPM¼ÆËã
-void QtMotor(void);          // Ç¿ÖÆÍÏ¶¯
-void MotorModeSel(void);     // ¿ØÖÆÄ£Ê½Ñ¡Ôñ
-void VariableClear(void);    // ±äÁ¿ÇåÁã
-void IFStartControl(void);   // IFÆô¶¯
-void IFObserverStartInit(void); // IF¹Û²âÆ÷Æô¶¯³õÊ¼»¯
+void GradXieLv(p_GXieLv pv); // æ¢¯åº¦åŠ å‡
+void SvpwmCal(M_SVPWM pv);   // SVPWMè°ƒåˆ¶ç®—æ³•å‡½æ•°
+void MotorStop(void);        // ç”µæœºåœæ­¢
+void MotorRun(void);         // ç”µæœºå¯åŠ¨
+void AxisDq(void);           // åæ ‡è½´å˜æ¢
+void FocSvpwm(void);         // SVPMè®¡ç®—
+void QtMotor(void);          // å¼ºåˆ¶æ‹–åŠ¨
+void MotorModeSel(void);     // æ§åˆ¶æ¨¡å¼é€‰æ‹©
+void VariableClear(void);    // å˜é‡æ¸…é›¶
+void IFStartControl(void);   // IFå¯åŠ¨
+void IFObserverStartInit(void); // IFè§‚æµ‹å™¨å¯åŠ¨åˆå§‹åŒ–
 
-void MotorInit(void);             // µç»ú²ÎÊı×Ü³õÊ¼»¯
-float my_atan2(float x, float y); // ·´ÕıÇĞº¯Êı		atan2(x,y)
-float my_atan(float x);           // ·´ÕıÇĞ¼ÆËã		atan(x)
-int8_t Sign(float x);             // ·ûºÅº¯Êı
-float my_abs(float x);            // È¡¾ø¶ÔÖµ
-float Sat(float s, float delta);  // ±¥ºÍº¯Êı
-float my_max(float a, float b);   // È¡×î´óÖµº¯Êı
-// double myln(double a);								//ÊµÏÖln¼ÆËã
+void MotorInit(void);             // ç”µæœºå‚æ•°æ€»åˆå§‹åŒ–
+float my_atan2(float x, float y); // åæ­£åˆ‡å‡½æ•°		atan2(x,y)
+float my_atan(float x);           // åæ­£åˆ‡è®¡ç®—		atan(x)
+int8_t Sign(float x);             // ç¬¦å·å‡½æ•°
+float my_abs(float x);            // å–ç»å¯¹å€¼
+float Sat(float s, float delta);  // é¥±å’Œå‡½æ•°
+float my_max(float a, float b);   // å–æœ€å¤§å€¼å‡½æ•°
+// double myln(double a);								//å®ç°lnè®¡ç®—
 
 #endif

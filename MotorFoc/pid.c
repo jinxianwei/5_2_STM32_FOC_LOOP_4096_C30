@@ -5,7 +5,7 @@ PI_Control pi_id = PI_Control_DEFAULTS;
 PI_Control pi_iq = PI_Control_DEFAULTS;
 PI_Control pi_pos = PI_Control_DEFAULTS;
 
-float Limit_Sat(float Uint, float U_max, float U_min) // œﬁ÷∆∏≥÷µ∫Ø ˝
+float Limit_Sat(float Uint, float U_max, float U_min) // ÈôêÂà∂ËµãÂÄºÂáΩÊï∞
 {
 	float Uout;
 
@@ -18,20 +18,20 @@ float Limit_Sat(float Uint, float U_max, float U_min) // œﬁ÷∆∏≥÷µ∫Ø ˝
 	return Uout;
 }
 
-// ‘ˆ¡ø Ωpid
+// Â¢ûÈáèÂºèpid
 void PiController(M_PI_Control pv)
 {
 	pv->err = pv->Ref - pv->Fbk;
-	// ª˝∑÷¿€º”
+	// ÁßØÂàÜÁ¥ØÂä†
 	pv->integrator += pv->Ki * pv->err * TS;
-	// œﬁ÷∆ª˝∑÷÷µ
+	// ÈôêÂà∂ÁßØÂàÜÂÄº
 	if (pv->integrator > pv->Umax)
 		pv->integrator = pv->Umax;
 	if (pv->integrator < pv->Umin)
 		pv->integrator = pv->Umin;
-	//  ‰≥ˆ = P + I
+	// ËæìÂá∫ = P + I
 	float u = pv->Kp * pv->err + pv->integrator;
-	//  ‰≥ˆœﬁ∑˘
+	// ËæìÂá∫ÈôêÂπÖ
 	pv->Out = Limit_Sat(u, pv->Umax, pv->Umin);
 }
 
@@ -39,7 +39,7 @@ void PiParaInit(void)
 {
 	pi_spd.Kp = Para.SpdLessKp;
 	pi_spd.Ki =Para.SpdLessKi;		   // 0.0001*10 / 0.2   T*SpeedLoopPrescaler/0.2
-	pi_spd.Umax = PI_MAX_SPD;  //  µÁ¡˜ 10
+	pi_spd.Umax = PI_MAX_SPD;  //  ÁîµÊµÅ 10
 	pi_spd.Umin = -PI_MAX_SPD; //-10
 
 	pi_id.Kp = 0.3f;  //

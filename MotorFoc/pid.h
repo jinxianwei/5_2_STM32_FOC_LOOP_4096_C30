@@ -4,30 +4,30 @@
 #include "motor_ctrl.h"
 
 typedef struct {
-        float  Ref;   // PI¿ØÖÆµÄ¸ø¶¨²ÎÊı
-        float  Fbk;   // PI¿ØÖÆµÄ·´À¡²ÎÊı
-        float  Out;   // PI¿ØÖÆµÄÊä³ö²ÎÊı
-        float  OutF;  // PI¿ØÖÆµÄÂË²¨ºóÊä³ö²ÎÊı
-        float  Kp;    // PI¿ØÖÆµÄ±ÈÀı²ÎÊı
-        float  Ki;    // PI¿ØÖÆµÄ»ı·Ö²ÎÊı
-        float  Umax;  // PI¿ØÖÆµÄÊä³öÏŞÖÆ×î´ó·ùÖµ²ÎÊı
-        float  Umin;  // PI¿ØÖÆµÄÊä³öÏŞÖÆ×îĞ¡·ùÖµ²ÎÊı
-        float  err;   // PI¿ØÖÆµÄÎó²î
-        float  err_l; // PI¿ØÖÆµÄÉÏÒ»´ÎÎó²î
+        float  Ref;   // PIæ§åˆ¶çš„ç»™å®šå‚æ•°
+        float  Fbk;   // PIæ§åˆ¶çš„åé¦ˆå‚æ•°
+        float  Out;   // PIæ§åˆ¶çš„è¾“å‡ºå‚æ•°
+        float  OutF;  // PIæ§åˆ¶çš„æ»¤æ³¢åè¾“å‡ºå‚æ•°
+        float  Kp;    // PIæ§åˆ¶çš„æ¯”ä¾‹å‚æ•°
+        float  Ki;    // PIæ§åˆ¶çš„ç§¯åˆ†å‚æ•°
+        float  Umax;  // PIæ§åˆ¶çš„è¾“å‡ºé™åˆ¶æœ€å¤§å¹…å€¼å‚æ•°
+        float  Umin;  // PIæ§åˆ¶çš„è¾“å‡ºé™åˆ¶æœ€å°å¹…å€¼å‚æ•°
+        float  err;   // PIæ§åˆ¶çš„è¯¯å·®
+        float  err_l; // PIæ§åˆ¶çš„ä¸Šä¸€æ¬¡è¯¯å·®
         float  integrator;
         float  v1;
         float  i1;
        } PI_Control, *M_PI_Control ;
 
-#define PI_Control_DEFAULTS {0,0,0,0,0,0,0,0,0,0} // PI³õÊ¼»¯²ÎÊı
+#define PI_Control_DEFAULTS {0,0,0,0,0,0,0,0,0,0} // PIåˆå§‹åŒ–å‚æ•°
 
 extern  PI_Control   pi_spd ;
 extern  PI_Control   pi_id ;
 extern  PI_Control   pi_iq ;
 extern  PI_Control   pi_pos;
 
-void  PiController(M_PI_Control  pv);  //PI¿ØÖÆËã·¨º¯Êı
-void  PiParaInit(void );    //PI¿ØÖÆ²ÎÊı³õÊ¼»¯
-float  Limit_Sat( float Uint,float U_max, float U_min); //ÏŞÖÆ¸³Öµº¯Êı			 
+void  PiController(M_PI_Control  pv);  //PIæ§åˆ¶ç®—æ³•å‡½æ•°
+void  PiParaInit(void );    //PIæ§åˆ¶å‚æ•°åˆå§‹åŒ–
+float  Limit_Sat( float Uint,float U_max, float U_min); //é™åˆ¶èµ‹å€¼å‡½æ•°			 
 #endif
 

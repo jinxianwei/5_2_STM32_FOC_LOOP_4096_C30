@@ -1,13 +1,13 @@
 #include "motor_ctrl.h"
 
-// �������
+// 电机归零
 void PositionToZero(void)
 {
     if (!PostionToZeroDouble())
         Motor.CtrlMode = M_ERR;
 }
 
-// ���ζ�λ����
+// 二次定位调零
 uint8_t PostionToZeroDouble(void)
 {
     TIM1->CCER |= 0x5555;
@@ -20,9 +20,9 @@ uint8_t PostionToZeroDouble(void)
 
     HAL_Delay(100);
 
-    Svpwm.Ualpha = 0.5f; // �����ѹ
+    Svpwm.Ualpha = 0.5f; // 调零电压
     Svpwm.Ubeta = 0.0f;
-    SvpwmCal((M_SVPWM)&Svpwm); // ��Alpha��Beta��ѹ�������SVPWM��ռ�ձ�
+    SvpwmCal((M_SVPWM)&Svpwm); // 将Alpha和Beta电压带入计算SVPWM的占空比
     HAL_Delay(1000);
 
     if (!MotorEncoderCalibrateElectricalZero())
@@ -37,32 +37,32 @@ uint8_t PostionToZeroDouble(void)
     return 1U;
 }
 
-// �и�,�����ջ�
+// 有感,电流闭环
 void CurCloseloop(float IqRef, float Theta)
 {
-    pi_id.Ref = 0.0f; // id=0��d������ջ������ش�
+    pi_id.Ref = 0.0f; // id=0，d轴电流闭环，力矩大
     pi_id.Fbk = Park.Ds;
-    PiController((M_PI_Control)&pi_id); // Id��ջ�
+    PiController((M_PI_Control)&pi_id); // Id轴闭环
 
     pi_iq.Ref = IqRef;
     pi_iq.Fbk = Park.Qs;
-    PiController((M_PI_Control)&pi_iq); // Iq��ջ�
+    PiController((M_PI_Control)&pi_iq); // Iq轴闭环
 
     Ipark.Theta = Theta;
     Ipark.Ds = pi_id.Out;
     Ipark.Qs = pi_iq.Out;
-    IPARK_Cale((M_IPARK)&Ipark); // IPARK��������
+    IPARK_Cale((M_IPARK)&Ipark); // IPARK函数计算
 }
 
-// UseRamp: 1-ʹ���ݶȼ��㣨���ڴ��ٶ�ģʽ��, 0-ֱ�Ӹ���������λ��ģʽ��
+// UseRamp: 1-使用梯度计算（用于纯速度模式）, 0-直接给定（用于位置模式）
 void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
 {
     float final_spd_ref = 0.0f;
 
     if (UseRamp)
     {
-		SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;	 // �����ٶȵ��ݶ�ֵ
-		SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER; // �����ٶȵ��ݶ�ʱ��
+		SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;	 // 定义速度的梯度值
+		SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER; // 定义速度的梯度时间
         SpdRefGXieLv.XieLv_X = SpeedRef;
         SpdRefGXieLv.Timer_Count++;
         if (my_abs(pi_spd.Ref - pi_spd.Fbk) >= 1000)
@@ -78,10 +78,10 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
     else
     {
         final_spd_ref = (float)SpeedRef;
-        final_spd_ref = Limit_Sat(final_spd_ref, 100, -100);//λ�û��ٶ�����
+        final_spd_ref = Limit_Sat(final_spd_ref, 100, -100);//位置环速度限制
     }
 
-    // �ٶȻ�����Ƶ�ʿ���
+    // 速度环计算频率控制
     if (++Para.SpeedCalTime >= SPEED_CNT)
     {
         Para.SpeedCalTime = 0;
@@ -89,7 +89,7 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
         pi_spd.Ref = final_spd_ref * Motor.P;
         pi_spd.Fbk = Motor.speed_E_rpm;
 
-        PiController((M_PI_Control)&pi_spd); // �ٶ�PI����
+        PiController((M_PI_Control)&pi_spd); // 速度PI计算
 
         pi_spd.OutF = pi_spd.OutF * LPF_I_RUN_B + pi_spd.Out * LPF_I_RUN_A;
     }
@@ -97,7 +97,7 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
     CurCloseloop(pi_spd.OutF, Motor.E_theta);
 }
 
-// �иУ�λ�û�
+// 有感，位置环
 #define ENC_MIN 1
 #define ENC_MAX 3999
 #define ENC_RANGE (ENC_MAX - ENC_MIN + 1) // 3999
@@ -115,7 +115,7 @@ void PosCloseloop(void)
     {
         PosLoopDivCnt = 0;
 
-        // Ŀ��λ��ӳ�� (Para.PosRef: 0..4095 -> mapped: 3999..1)
+        // 目标位置映射 (Para.PosRef: 0..4095 -> mapped: 3999..1)
         uint32_t t = ((uint32_t)Para.PosRef * (ENC_RANGE - 1)) >> 12;
         uint16_t mapped = (uint16_t)(ENC_MAX - t);
         Pos.P_Ref = (int32_t)mapped;
@@ -127,19 +127,19 @@ void PosCloseloop(void)
         else if (err < -half)
             err += ENC_RANGE;
 
-        // ������
+        // 比例项
         float up = Pos.Kp * (float)err;
 
-        // ������
+        // 积分项
         /*
         Pos.P_Integral += Pos.Ki * (float)err;
-        Pos.P_Integral = Limit_Sat(Pos.P_Integral, POS_I_LIMIT, -POS_I_LIMIT); // ������
+        Pos.P_Integral = Limit_Sat(Pos.P_Integral, POS_I_LIMIT, -POS_I_LIMIT); // 抗饱和
         SpeedRef = up + Pos.P_Integral;
         */
 
-        SpeedRef = up; // Ŀǰ��ʹ�� P ����
+        SpeedRef = up; // 目前仅使用 P 控制
 
-        // ����޷�����ֹλ��ƫ������¸������ٶȲο�ֵ��������
+        // 输出限幅：防止位置偏差过大导致给出的速度参考值溢出或过快
         Pos.P_Out = (int16_t)Limit_Sat(SpeedRef, POS_MAX_SPEED, -POS_MAX_SPEED);
     }
 

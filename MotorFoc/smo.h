@@ -6,35 +6,35 @@
 
 typedef struct
 {
-	float Ualpha;	  // Á½Ïà¾²Ö¹×ø±êÏµ¦ÁÖáµçÑ¹
-	float Ubeta;	  // Á½Ïà¾²Ö¹×ø±êÏµ¦ÂÖáµçÑ¹
-	float Ialpha;	  // Á½Ïà¾²Ö¹×ø±êÏµ¦ÁÖáµçÁ÷
-	float Ibeta;	  // Á½Ïà¾²Ö¹×ø±êÏµ¦ÂÖáµçÁ÷
-	float Est_Ialpha; // Á½Ïà¾²Ö¹×ø±êÏµ¹Û²âµÄ¦ÁµçÁ÷
-	float Est_Ibeta;  // Á½Ïà¾²Ö¹×ø±êÏµ¹Û²âµÄ¦ÂµçÁ÷
-	float Ialpha_Err; // Á½Ïà¾²Ö¹×ø±êÏµ¦ÁÖáµçÁ÷Îó²î
-	float Ibeta_Err;  // Á½Ïà¾²Ö¹×ø±êÏµ¦ÂÖáµçÁ÷Îó²î
-	float Zalpha;	  // »¬Ä¤¹Û²âÆ÷µÄ¦ÁÖáZÆ½Ãæ
-	float Zbeta;	  // »¬Ä¤¹Û²âÆ÷µÄ¦ÂÖáZÆ½Ãæ
-	float Ealpha;	  // »¬Ä¤¹Û²âµÄ¦ÁÖá·´µç¶¯ÊÆ
-	float Ebeta;	  // »¬Ä¤¹Û²âµÄ¦ÂÖá·´µç¶¯ÊÆ
-	float Fsmopos;	  // »¬Ä¤ÏµÊı1
-	float Gsmopos;	  // »¬Ä¤ÏµÊı2
-	float E0;		  // »¬Ä¤µÄµçÁ÷Îó²îµÄÏŞ·ùÖµ 0.5
-	float atan_theta; // ·´ÕıÇĞ¼ÆËãµÄ½Ç¶È
+	float Ualpha;	  // ä¸¤ç›¸é™æ­¢åæ ‡ç³»Î±è½´ç”µå‹
+	float Ubeta;	  // ä¸¤ç›¸é™æ­¢åæ ‡ç³»Î²è½´ç”µå‹
+	float Ialpha;	  // ä¸¤ç›¸é™æ­¢åæ ‡ç³»Î±è½´ç”µæµ
+	float Ibeta;	  // ä¸¤ç›¸é™æ­¢åæ ‡ç³»Î²è½´ç”µæµ
+	float Est_Ialpha; // ä¸¤ç›¸é™æ­¢åæ ‡ç³»è§‚æµ‹çš„Î±ç”µæµ
+	float Est_Ibeta;  // ä¸¤ç›¸é™æ­¢åæ ‡ç³»è§‚æµ‹çš„Î²ç”µæµ
+	float Ialpha_Err; // ä¸¤ç›¸é™æ­¢åæ ‡ç³»Î±è½´ç”µæµè¯¯å·®
+	float Ibeta_Err;  // ä¸¤ç›¸é™æ­¢åæ ‡ç³»Î²è½´ç”µæµè¯¯å·®
+	float Zalpha;	  // æ»‘è†œè§‚æµ‹å™¨çš„Î±è½´Zå¹³é¢
+	float Zbeta;	  // æ»‘è†œè§‚æµ‹å™¨çš„Î²è½´Zå¹³é¢
+	float Ealpha;	  // æ»‘è†œè§‚æµ‹çš„Î±è½´åç”µåŠ¨åŠ¿
+	float Ebeta;	  // æ»‘è†œè§‚æµ‹çš„Î²è½´åç”µåŠ¨åŠ¿
+	float Fsmopos;	  // æ»‘è†œç³»æ•°1
+	float Gsmopos;	  // æ»‘è†œç³»æ•°2
+	float E0;		  // æ»‘è†œçš„ç”µæµè¯¯å·®çš„é™å¹…å€¼ 0.5
+	float atan_theta; // åæ­£åˆ‡è®¡ç®—çš„è§’åº¦
 } Angle_SMO, *p_Angle_SMO;
 
-#define Angle_SMO_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // ³õÊ¼»¯²ÎÊı
+#define Angle_SMO_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // åˆå§‹åŒ–å‚æ•°
 
-#define PLL_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // ³õÊ¼»¯²ÎÊı
+#define PLL_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // åˆå§‹åŒ–å‚æ•°
 
 extern Angle_SMO AngleSmoPara;
 
 extern float SMO_Angle1;
 extern float SMO_H;
 
-void SmoAngleCale(p_Angle_SMO pv); // »¬Ä¤¹Û²âÆ÷
-void SMO_Init(void);			   // »¬Ä¤²ÎÊı³õÊ¼»¯
+void SmoAngleCale(p_Angle_SMO pv); // æ»‘è†œè§‚æµ‹å™¨
+void SMO_Init(void);			   // æ»‘è†œå‚æ•°åˆå§‹åŒ–
 void SmoObserver(float Id, float Iq);
 void SmoThetaCale(float Ialpha, float Ibeta, float Ualpha, float Ubeta);
 

@@ -7,9 +7,9 @@ float WE_IIR_LPF_Coeff[8] = {1.0f, 1.0f, 0.0f, 1.0f, -0.981325890492688258f, 0.0
 
 uint32_t blockSize = BLOCK_SIZE;
 
-static float IIRStateF32_BPF[4 * NumStages]; /* ×´Ì¬»º´æ */
+static float IIRStateF32_BPF[4 * NumStages]; /* çŠ¶æ€ç¼“å­˜ */
 
-/* °ÍÌØÎÖË¹´øÍ¨ÂË²¨Æ÷ÏµÊý500Hz 1500Hz*/
+/* å·´ç‰¹æ²ƒæ–¯å¸¦é€šæ»¤æ³¢å™¨ç³»æ•°500Hz 1500Hz*/
 const float IIRCoeffs32BP[5 * NumStages] = {
     1.0f, 0.0f, -1.0f, 1.845151097222276215248371045163366943598f,
     -0.87461605116377438839947444648714736104f,
@@ -18,31 +18,31 @@ const float IIRCoeffs32BP[5 * NumStages] = {
 
 arm_biquad_casd_df1_inst_f32 S;
 
-// ´øÍ¨ÂË²¨Æ÷³õÊ¼»¯
+// å¸¦é€šæ»¤æ³¢å™¨åˆå§‹åŒ–
 void BPF_Init(void)
 {
-  /* ³õÊ¼»¯ */
+  /* åˆå§‹åŒ– */
   arm_biquad_cascade_df1_init_f32(&S, NumStages, (float *)&IIRCoeffs32BP[0], (float *)&IIRStateF32_BPF[0]);
 }
 
 /*
 *********************************************************************************************************
-*    º¯ Êý Ãû: arm_iir_f32_bpf
-*    ¹¦ÄÜËµÃ÷: µ÷ÓÃº¯Êýarm_iir_f32_bpfÊµÏÖ´øÍ¨ÂË²¨Æ÷
-*    ÐÎ    ²Î£ºÎÞ
-*    ·µ »Ø Öµ: ÎÞ
+*    å‡½ æ•° å: arm_iir_f32_bpf
+*    åŠŸèƒ½è¯´æ˜Ž: è°ƒç”¨å‡½æ•°arm_iir_f32_bpfå®žçŽ°å¸¦é€šæ»¤æ³¢å™¨
+*    å½¢    å‚ï¼šæ— 
+*    è¿” å›ž å€¼: æ— 
 *********************************************************************************************************
 */
 
 void arm_iir_f32_bpf(float *inputF32, float *outputF32)
 {
-  /* ÊµÏÖIIRÂË²¨ */
+  /* å®žçŽ°IIRæ»¤æ³¢ */
   arm_biquad_cascade_df1_f32(&S, inputF32, outputF32, blockSize);
 
   *outputF32 = *outputF32 * ScaleValue_BPF;
 }
 
-// °ÍÌØÎÖË¹ÂË²¨Æ÷
+// å·´ç‰¹æ²ƒæ–¯æ»¤æ³¢å™¨
 void IirButterworthCoefficientInit(float temp[8], IIR_BUTTERWORTH_DEF *iir_butterworth_temp)
 {
   iir_butterworth_temp->b0 = temp[0];

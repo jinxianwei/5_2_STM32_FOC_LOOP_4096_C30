@@ -2,11 +2,11 @@
 
 Angle_SMO AngleSmoPara = Angle_SMO_DEFAULTS;
 
-float SMO_Angle1; // ½Ç¶È²¹³¥ºóµÄ½Ç¶È
+float SMO_Angle1; // è§’åº¦è¡¥å¿åçš„è§’åº¦
 float SMO_H;
 
 static float Smo_Dir = 1.0f;
-// »¬Ä¤¹Û²âÆ÷½Ç¶È¼ÆËã
+// æ»‘è†œè§‚æµ‹å™¨è§’åº¦è®¡ç®—
 void SmoAngleCale(p_Angle_SMO pv)
 {
 	//	pv->Ialpha = CLARKE_ICurr.Alpha;
@@ -14,10 +14,10 @@ void SmoAngleCale(p_Angle_SMO pv)
 	//
 	//	pv->Ualpha = SVPWM_dq.Ualpha;
 	//	pv->Ubeta = SVPWM_dq.Ubeta;
-	// ¹Û²âµçÁ÷
+	// è§‚æµ‹ç”µæµ
 	pv->Est_Ialpha += TS * (-Motor.Rs / Motor.Ls * pv->Est_Ialpha + 1 / Motor.Ls * (pv->Ualpha - pv->Zalpha));
 	pv->Est_Ibeta += TS * (-Motor.Rs / Motor.Ls * pv->Est_Ibeta + 1 / Motor.Ls * (pv->Ubeta - pv->Zbeta));
-	// ·´µç¶¯ÊÆ£¬ZalphaÓëZbetaÊÇ¿ª¹ØĞÅºÅ£¬ĞèÒª¾­¹ıÂË²¨²ÅÄÜµÃµ½·´µç¶¯ÊÆµÄµÈĞ§Öµ
+	// åç”µåŠ¨åŠ¿ï¼ŒZalphaä¸Zbetaæ˜¯å¼€å…³ä¿¡å·ï¼Œéœ€è¦ç»è¿‡æ»¤æ³¢æ‰èƒ½å¾—åˆ°åç”µåŠ¨åŠ¿çš„ç­‰æ•ˆå€¼
 	//	pv->Zalpha = SMO_KSLIDE*Sign(pv->Est_Ialpha - pv->Ialpha);
 	//	pv->Zbeta = SMO_KSLIDE*Sign(pv->Est_Ibeta - pv->Ibeta);
 
@@ -26,14 +26,14 @@ void SmoAngleCale(p_Angle_SMO pv)
 
 	pv->Zalpha = SMO_KSLIDE * Sat(pv->Ialpha_Err, 0.5f);
 	pv->Zbeta = SMO_KSLIDE * Sat(pv->Ibeta_Err, 0.5f);
-	// µÍÍ¨ÂË²¨
+	// ä½é€šæ»¤æ³¢
 	pv->Ealpha = pv->Ealpha * LPF_SMO_B + pv->Zalpha * LPF_SMO_A;
 	pv->Ebeta = pv->Ebeta * LPF_SMO_B + pv->Zbeta * LPF_SMO_A;
 
-	// ²âÊÔ»¬Ä¤ÔöÒæ
+	// æµ‹è¯•æ»‘è†œå¢ç›Š
 	//	SMO_H = my_max(-Motor.Rs*my_abs(pv->Ialpha_Err) +pv->Ealpha*Sign(pv->Ialpha_Err), -Motor.Rs*my_abs(pv->Ibeta_Err) +pv->Ebeta*Sign(pv->Ibeta_Err));
 
-	//	pv->atan_theta =my_atan2(pv->Ebeta, -pv->Ealpha);						//·´ÕıÇĞ·¨»ñµÃ½Ç¶È
+	//	pv->atan_theta =my_atan2(pv->Ebeta, -pv->Ealpha);						//åæ­£åˆ‡æ³•è·å¾—è§’åº¦
 	//	SMO_theta_compersation = my_atan(PllHfiPara.Omega/(-wc));
 	//	SMO_Angle1 = pv->atan_theta - SMO_theta_compersation;
 	//	if(SMO_Angle1 >= PIX2)
@@ -42,18 +42,18 @@ void SmoAngleCale(p_Angle_SMO pv)
 	//		SMO_Angle1 += PIX2;
 	if (SensorLess.Speed_Ref >= 0)
 	{
-		// Ö¸ÁîÒªÇóÕı×ª£ºÖ»ÓĞµ±µç»úÊµ¼ÊËÙ¶È´óÓÚ -50 RPM£¨¼´»ù±¾Í£Ö¹·´×ª£©Ê±£¬²ÅÇĞ»»ÎªÕıÏòËã·¨
+		// æŒ‡ä»¤è¦æ±‚æ­£è½¬ï¼šåªæœ‰å½“ç”µæœºå®é™…é€Ÿåº¦å¤§äº -50 RPMï¼ˆå³åŸºæœ¬åœæ­¢åè½¬ï¼‰æ—¶ï¼Œæ‰åˆ‡æ¢ä¸ºæ­£å‘ç®—æ³•
 		if (SensorLess.Speed_Fbk >= -50.0f)
 			Smo_Dir = 1.0f;
 	}
 	else
 	{
-		// Ö¸ÁîÒªÇó·´×ª£ºÖ»ÓĞµ±µç»úÊµ¼ÊËÙ¶ÈĞ¡ÓÚ 50 RPM£¨¼´»ù±¾Í£Ö¹Õı×ª£©Ê±£¬²ÅÇĞ»»Îª·´ÏòËã·¨
+		// æŒ‡ä»¤è¦æ±‚åè½¬ï¼šåªæœ‰å½“ç”µæœºå®é™…é€Ÿåº¦å°äº 50 RPMï¼ˆå³åŸºæœ¬åœæ­¢æ­£è½¬ï¼‰æ—¶ï¼Œæ‰åˆ‡æ¢ä¸ºåå‘ç®—æ³•
 		if (SensorLess.Speed_Fbk <= 50.0f)
 			Smo_Dir = -1.0f;
 	}
 
-	// ¸ù¾İ·½Ïò±êÖ¾¼ÆËã PLL
+	// æ ¹æ®æ–¹å‘æ ‡å¿—è®¡ç®— PLL
 	if (Smo_Dir == 1.0f)
 		PllCale((p_PLL)&PllSmoPara, pv->Ealpha, pv->Ebeta);
 	else
@@ -64,7 +64,7 @@ void SMO_Init(void)
 {
 	AngleSmoPara.Fsmopos = exp((-Motor.Rs / Motor.Ls) * TS);
 	AngleSmoPara.Gsmopos = (Motor.Vb / Motor.Ib) * (1 / Motor.Rs) * (1 - AngleSmoPara.Fsmopos);
-	AngleSmoPara.E0 = 0.5; // ±êçÛÖµ1µÄÒ»°ë
+	AngleSmoPara.E0 = 0.5; // æ ‡å¹ºå€¼1çš„ä¸€åŠ
 }
 
 // void SmoAngleCale(p_Angle_SMO pv)
@@ -80,7 +80,7 @@ void SMO_Init(void)
 //
 //	/*  Sliding control calculator	*/
 //	/* pV->Zalpha=pV->IalphaError*pV->Kslide/pV->E0) where E0=0.5 here*/
-//	//ÏŞÖÆ¸³Öµº¯Êı
+//	//é™åˆ¶èµ‹å€¼å‡½æ•°
 //	IalphaError_Limit = Limit_Sat(pv->Ialpha_Err, pv->E0, -pv->E0);
 //	IbetaError_Limit = Limit_Sat(pv->Ibeta_Err, pv->E0, -pv->E0);
 //
@@ -95,34 +95,34 @@ void SMO_Init(void)
 //	PllCale((p_PLL)&PllSmoPara, pv->Ealpha, pv->Ebeta);
 //}
 
-// SMOËÙ¶È±Õ»·¿ØÖÆ
+// SMOé€Ÿåº¦é—­ç¯æ§åˆ¶
 void SmoObserver(float Id, float Iq)
 {
 	if (Para.SpeedCalTime == SPD_CAL_PERIOD)
 	{
 		pi_spd.Ref = SensorLess.Speed_Ref;
 		pi_spd.Fbk = SensorLess.Speed_Fbk;
-		PiController((M_PI_Control)&pi_spd);								// ËÙ¶È»·
-		pi_spd.OutF = pi_spd.OutF * LPF_I_RUN_B + pi_spd.Out * LPF_I_RUN_A; // »·Â·ÂË²¨ºóÊä³ö
+		PiController((M_PI_Control)&pi_spd);								// é€Ÿåº¦ç¯
+		pi_spd.OutF = pi_spd.OutF * LPF_I_RUN_B + pi_spd.Out * LPF_I_RUN_A; // ç¯è·¯æ»¤æ³¢åè¾“å‡º
 	}
 
-	pi_id.Ref = 0; // id=0£¬dÖáµçÁ÷±Õ»·£¬Á¦¾Ø´ó
+	pi_id.Ref = 0; // id=0ï¼Œdè½´ç”µæµé—­ç¯ï¼ŒåŠ›çŸ©å¤§
 	pi_id.Fbk = Id;
-	PiController((M_PI_Control)&pi_id); // IdÖá±Õ»·
+	PiController((M_PI_Control)&pi_id); // Idè½´é—­ç¯
 	pi_id.OutF = pi_id.OutF * LPF_I_RUN_B + pi_id.Out * LPF_I_RUN_A;
 
-	pi_iq.Ref = pi_spd.OutF; // IqµÄÉè¶¨ºÍµç»úµÄ¶î¶¨×ª¾ØÓĞ¹Ø£¬IFÆô¶¯Ò»°ãIqÑ¡Ôñ±È¶î¶¨×ª¾ØÏÂµÄIqÂÔ´ó
+	pi_iq.Ref = pi_spd.OutF; // Iqçš„è®¾å®šå’Œç”µæœºçš„é¢å®šè½¬çŸ©æœ‰å…³ï¼ŒIFå¯åŠ¨ä¸€èˆ¬Iqé€‰æ‹©æ¯”é¢å®šè½¬çŸ©ä¸‹çš„Iqç•¥å¤§
 	pi_iq.Fbk = Iq;
-	PiController((M_PI_Control)&pi_iq); // IqÖá±Õ»·
+	PiController((M_PI_Control)&pi_iq); // Iqè½´é—­ç¯
 	pi_iq.OutF = pi_iq.OutF * LPF_I_RUN_B + pi_iq.Out * LPF_I_RUN_A;
 
 	Ipark.Theta = SensorLess.theta;
 	Ipark.Ds = pi_id.OutF;
 	Ipark.Qs = pi_iq.OutF;
-	IPARK_Cale((M_IPARK)&Ipark); // IPARKº¯Êı¼ÆËã
+	IPARK_Cale((M_IPARK)&Ipark); // IPARKå‡½æ•°è®¡ç®—
 }
 
-// »¬Ä¤¹Û²âÆ÷½Ç¶È¼ÆËã
+// æ»‘è†œè§‚æµ‹å™¨è§’åº¦è®¡ç®—
 void SmoThetaCale(float Ialpha, float Ibeta, float Ualpha, float Ubeta)
 {
 	AngleSmoPara.Ialpha = Ialpha;

@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
-* �ļ�����hmi_app.c
-* ��  �ߣ�������
-* ��  �ڣ�2024/10/07
-* ˵  �����˻���������
+* 文件名：hmi_app.c
+* 作  者：？？？
+* 日  期：2024/10/07
+* 说  明：人机交互任务
 ***********************************************************************
 */
 
@@ -17,24 +17,24 @@
 FloatToChar fc;
 USART_DATA Usart;
 
-const uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f}; // JustFloat�涨{0x00, 0x00, 0x80, 0x7f}Ϊһ�����ݵĽ���
+const uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f}; // JustFloat规定{0x00, 0x00, 0x80, 0x7f}为一组数据的结束
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if (huart->Instance == USART1) // ����Ǵ���1
+	if (huart->Instance == USART1) // 如果是串口1
 	{
-		Usart.RxLine++;											 // ÿ���յ�һ�����ݣ�����ص����ݳ��ȼ�1
-		Usart.UsartRxBuf[Usart.RxLine - 1] = Usart.aRxBuffer[0]; // ��ÿ�ν��յ������ݱ��浽��������
-		if (Usart.aRxBuffer[0] == 0xfa)							 // ���ս�����־λ��������ݿ����Զ��壬����ʵ������
+		Usart.RxLine++;											 // 每接收到一个数据，进入回调数据长度加1
+		Usart.UsartRxBuf[Usart.RxLine - 1] = Usart.aRxBuffer[0]; // 把每次接收到的数据保存到缓存数组
+		if (Usart.aRxBuffer[0] == 0xfa)							 // 接收结束标志位，这个数据可以自定义，根据实际需求
 		{
-			Usart.UsartRxSta = 1; // ������ɱ�־λ��һ
+			Usart.UsartRxSta = 1; // 接收完成标志位置一
 		}
-		Usart.aRxBuffer[0] = 0; // ��մ��ڽ��ջ���
+		Usart.aRxBuffer[0] = 0; // 清空串口接收缓存
 	}
 }
 
 /*JustFloat*/
-// ����һ�������壬������ĸ����Ͳ������뵽�����unsigned char������
+// 定义一个联合体，将传入的浮点型参数存入到传入的unsigned char数组里
 void float_turn_u8(float f, uint8_t *c)
 {
 	uint8_t x;
@@ -50,11 +50,11 @@ void float_turn_u8(float f, uint8_t *c)
 /*
 
 *JustFloat:
-*fdata:��������ָ��
-*fdata_num:�������ݸ���
-*Usart_choose:���͵Ĵ��ڵ�ַ
+*fdata:传入数组指针
+*fdata_num:数组数据个数
+*Usart_choose:发送的串口地址
 
-ǰ����for�� float����ת��λ��λunsigned char���Ͳ����ͳ�ȥ��������forѭ����β������ȥ
+前两个for将 float类型转换位四位unsigned char类型并发送出去，第三个for循环将尾部发出去
 */
 
 static void JustFloatSend(float *fdata, uint16_t fdata_num, USART_TypeDef *Usart_choose)
@@ -81,14 +81,14 @@ static void JustFloatSend(float *fdata, uint16_t fdata_num, USART_TypeDef *Usart
 }
 
 /*
- * ���ݴ�����Ϣ����PID����
+ * 根据串口信息进行PID调参
  */
 static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 {
 	static uint8_t reg = 0;
-	memcpy(&fc.c_data, DataBuff, 4); // ��ѭIEEE 754Э�飬������ǰ��λ���蹲����
+	memcpy(&fc.c_data, DataBuff, 4); // 遵循IEEE 754协议，将数据前四位赋予共用体
 
-	reg = DataBuff[6]; // ����
+	reg = DataBuff[6]; // 命令
 
 	switch (reg)
 	{
@@ -125,48 +125,48 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		}
 		case SPEED_LOOP:
 		{
-			MotorRun();					 // ����PWM
-			Motor.CtrlMode = SPEED_LOOP; // �иУ��ٶ�&�����ջ�
+			MotorRun();					 // 启动PWM
+			Motor.CtrlMode = SPEED_LOOP; // 有感，速度&电流闭环
 			break;
 		}
 		case CUR_LOOP:
 		{
-			MotorRun();				   // ����PWM
-			Motor.CtrlMode = CUR_LOOP; // �иУ������ջ�
+			MotorRun();				   // 启动PWM
+			Motor.CtrlMode = CUR_LOOP; // 有感，电流闭环
 			break;
 		}
 		case POS_LOOP:
 		{
-			MotorRun();				   // ����PWM
-			Motor.CtrlMode = POS_LOOP; // �иУ�λ�ñջ�
+			MotorRun();				   // 启动PWM
+			Motor.CtrlMode = POS_LOOP; // 有感，位置闭环
 			break;
 		}
 		case IF_CTRL:
 		{
-			MotorRun();				  // ����PWM
-			Motor.CtrlMode = IF_CTRL; // IF����
+			MotorRun();				  // 启动PWM
+			Motor.CtrlMode = IF_CTRL; // IF启动
 			break;
 		}
 
 		case HFI_CTRL:
 		{
 			PllHfiPara.Theta = 0;
-			MotorRun();				   // ����PWM
-			Motor.CtrlMode = HFI_CTRL; // HFIģʽ
+			MotorRun();				   // 启动PWM
+			Motor.CtrlMode = HFI_CTRL; // HFI模式
 			break;
 		}
 
 		case HFI_SMO:
 		{
-			MotorRun();				  // ����PWM
-			Motor.CtrlMode = HFI_SMO; // ����HFI�����ٻ�Ĥ
+			MotorRun();				  // 启动PWM
+			Motor.CtrlMode = HFI_SMO; // 低速HFI，高速滑膜
 			break;
 		}
 
 		case HFI_FLUX:
 		{
-			MotorRun();				   // ����PWM
-			Motor.CtrlMode = HFI_FLUX; // ����HFI�����ٴ���
+			MotorRun();				   // 启动PWM
+			Motor.CtrlMode = HFI_FLUX; // 低速HFI，高速磁链
 			break;
 		}
 
@@ -174,7 +174,7 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		{
 			IFObserverStartInit();
 			MotorRun();
-			Motor.CtrlMode = IF_SMO; // IF���������ٻ�Ĥ
+			Motor.CtrlMode = IF_SMO; // IF启动，高速滑膜
 			break;
 		}
 
@@ -182,13 +182,13 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 		{
 			IFObserverStartInit();
 			MotorRun();
-			Motor.CtrlMode = IF_FLUX; // IF���������ٴ���
+			Motor.CtrlMode = IF_FLUX; // IF启动，高速磁链
 			break;
 		}
 		case TO_ZERO:
 		{
 			Motor.CtrlMode = TO_ZERO;
-			Motor.CtrlMode = PostionToZeroDouble() ? STOP : M_ERR;
+			PostionToZeroDouble(); // 二次调零
 			break;
 		}
 		default:
@@ -206,38 +206,38 @@ void RecevToVofa(void)
 {
 	if (Usart.UsartRxSta)
 	{
-		if (Usart.UsartRxBuf[5] == 0xfb) // У��λ�������յ��������Ƿ���ȷ
+		if (Usart.UsartRxBuf[5] == 0xfb) // 校验位，检测接收到的数据是否正确
 		{
-			VofaPiAdjust(Usart.UsartRxBuf, 1); // ���ݽ����Ͳ�����ֵ����
+			VofaPiAdjust(Usart.UsartRxBuf, 1); // 数据解析和参数赋值函数
 		}
-		memset(Usart.UsartRxBuf, 0, 8); // ��ջ�������
-		Usart.RxLine = 0;				// ��ս��ճ���
+		memset(Usart.UsartRxBuf, 0, 8); // 清空缓存数组
+		Usart.RxLine = 0;				// 清空接收长度
 		Usart.UsartRxSta = 0;
 	}
 }
 
-// ���ݷ�������λ���۲�
+// 数据发送至上位机观测
 void SendToVofa(void)
 {
-	Usart.VofaData[0] = Motor.speed_M_rpm;	  // ��Ƕ�
-	Usart.VofaData[1] = Para.SpeedRef;		  // Ŀ���ٶ�
-	Usart.VofaData[2] = pi_spd.Fbk / Motor.P; // ʵ���ٶ�
-	Usart.VofaData[3] = Motor.E_theta;		  // �������Ƕ�
-	Usart.VofaData[4] = flux.theta_e;		  // �����۲�Ƕ�
-	Usart.VofaData[5] = PllHfiPara.Theta;	  // HFI�Ƕ�
-	Usart.VofaData[6] = PllSmoPara.Angle;	  // ��Ĥ�۲�Ƕ�
-	Usart.VofaData[7] = Para.IfTheta;		  // IFǿ�ϽǶ�
-	Usart.VofaData[8] = AdcFilPara.CurU;	  // U�����
-	Usart.VofaData[9] = AdcFilPara.CurV;	  // V�����
-	Usart.VofaData[10] = AdcFilPara.CurW;	  // W�����
-	Usart.VofaData[11] = TIM3->CNT;			  // ʵ��λ��
-	Usart.VofaData[12] = Pos.P_Ref;			  // Ŀ��λ��
+	Usart.VofaData[0] = Motor.speed_M_rpm;	  // 电角度
+	Usart.VofaData[1] = Para.SpeedRef;		  // 目标速度
+	Usart.VofaData[2] = pi_spd.Fbk / Motor.P; // 实际速度
+	Usart.VofaData[3] = Motor.E_theta;		  // 编码器角度
+	Usart.VofaData[4] = flux.theta_e;		  // 磁链观测角度
+	Usart.VofaData[5] = PllHfiPara.Theta;	  // HFI角度
+	Usart.VofaData[6] = PllSmoPara.Angle;	  // 滑膜观测角度
+	Usart.VofaData[7] = Para.IfTheta;		  // IF强拖角度
+	Usart.VofaData[8] = AdcFilPara.CurU;	  // U相电流
+	Usart.VofaData[9] = AdcFilPara.CurV;	  // V相电流
+	Usart.VofaData[10] = AdcFilPara.CurW;	  // W相电流
+	Usart.VofaData[11] = TIM3->CNT;			  // 实际位置
+	Usart.VofaData[12] = Pos.P_Ref;			  // 目标位置
 	JustFloatSend(Usart.VofaData, 13, USART1);
 }
 
 /**
 ***********************************************************
-* @brief LEDӦ�ó���
+* @brief LED应用程序
 * @param
 * @return
 ***********************************************************
@@ -247,19 +247,19 @@ void SendToVofa(void)
 #define LED_R_INDEX 2
 void LedTask(uint8_t r, uint8_t g, uint8_t b)
 {
-	/* �� */
+	/* 红 */
 	if (r)
 		TurnOnLed(LED_R_INDEX);
 	else
 		TurnOffLed(LED_R_INDEX);
 
-	/* �� */
+	/* 绿 */
 	if (g)
 		TurnOnLed(LED_G_INDEX);
 	else
 		TurnOffLed(LED_G_INDEX);
 
-	/* �� */
+	/* 蓝 */
 	if (b)
 		TurnOnLed(LED_B_INDEX);
 	else
@@ -268,7 +268,7 @@ void LedTask(uint8_t r, uint8_t g, uint8_t b)
 
 /**
 ***********************************************************
-* @brief ��λ��Ӧ�ó���
+* @brief 电位器应用程序
 * @param
 * @return
 ***********************************************************
@@ -341,7 +341,7 @@ void VrTask(void)
 
 /**
 ***********************************************************
-* @brief ����Ӧ�ó���
+* @brief 按键应用程序
 * @param
 * @return
 ***********************************************************
@@ -366,48 +366,48 @@ void HmiTask(void)
 
 	case KEY4_LONG_PRESS:
 	{
-		HAL_GPIO_WritePin(PWR_GPIO_Port, PWR_Pin, GPIO_PIN_RESET); // �����ػ�
+		HAL_GPIO_WritePin(PWR_GPIO_Port, PWR_Pin, GPIO_PIN_RESET); // 长按关机
 	}
 	break;
 	case KEY1_SHORT_PRESS:
 	{
-		MotorRun();				  // ����PWM
-		Motor.CtrlMode = HFI_SMO; // ����HFI�����ٻ�Ĥ
+		MotorRun();				  // 启动PWM
+		Motor.CtrlMode = HFI_SMO; // 低速HFI，高速滑膜
 	}
 	break;
 
 	case KEY1_DOUBLE_PRESS:
 	{
-		MotorRun();				 // ����PWM
-		Motor.CtrlMode = IF_SMO; // ����IF����SMO
+		MotorRun();				 // 启动PWM
+		Motor.CtrlMode = IF_SMO; // 低速IF高速SMO
 	}
 	break;
 
 	case KEY1_LONG_PRESS:
 	{
-		MotorRun();				   // ����PWM
-		Motor.CtrlMode = HFI_FLUX; // ����HFI�����ٴ���
+		MotorRun();				   // 启动PWM
+		Motor.CtrlMode = HFI_FLUX; // 低速HFI，高速磁链
 	}
 	break;
 
 	case KEY2_SHORT_PRESS:
 	{
-		MotorRun();					 // ����PWM
-		Motor.CtrlMode = SPEED_LOOP; // �иУ��ٶ�&�����ջ�
+		MotorRun();					 // 启动PWM
+		Motor.CtrlMode = SPEED_LOOP; // 有感，速度&电流闭环
 	}
 	break;
 
 	case KEY2_DOUBLE_PRESS:
 	{
-		MotorRun();				   // ����PWM
-		Motor.CtrlMode = CUR_LOOP; // �иУ������ջ�
+		MotorRun();				   // 启动PWM
+		Motor.CtrlMode = CUR_LOOP; // 有感，电流闭环
 	}
 	break;
 
 	case KEY2_LONG_PRESS:
 	{
-		MotorRun();				   // ����PWM
-		Motor.CtrlMode = POS_LOOP; // �иУ�λ�ñջ�
+		MotorRun();				   // 启动PWM
+		Motor.CtrlMode = POS_LOOP; // 有感，位置闭环
 	}
 	break;
 
@@ -420,15 +420,16 @@ void HmiTask(void)
 
 	case KEY3_DOUBLE_PRESS:
 	{
-		MotorRun();				  // ����PWM
-		Motor.CtrlMode = IF_FLUX; // ����IF������FLUX
+		MotorRun();				  // 启动PWM
+		Motor.CtrlMode = IF_FLUX; // 低速IF，高速FLUX
 	}
 	break;
 
 	case KEY3_LONG_PRESS:
 	{
 		Motor.CtrlMode = TO_ZERO;
-		Motor.CtrlMode = PostionToZeroDouble() ? STOP : M_ERR;
+		PostionToZeroDouble(); // 二次调零
+		Motor.CtrlMode = STOP;
 	}
 	break;
 

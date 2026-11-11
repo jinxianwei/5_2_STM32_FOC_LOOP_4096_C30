@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
-* ÎÄ¼şÃû£ºadc_drv.c
-* ×÷  Õß£º£¿£¿£¿
-* ÈÕ  ÆÚ£º2024/10/23
-* Ëµ  Ã÷£ºADCÇı¶¯
+* æ–‡ä»¶åï¼šadc_drv.c
+* ä½œ  è€…ï¼šï¼Ÿï¼Ÿï¼Ÿ
+* æ—¥  æœŸï¼š2024/10/23
+* è¯´  æ˜ï¼šADCé©±åŠ¨
 ***********************************************************************
 */
 
@@ -14,7 +14,7 @@ ADC_Sample_F AdcFilPara = ADC_Sample_F_DEFAULTS;
 
 uint16_t ADC_Value[5];
 
-// Ğ£×¼ÁãÆ¯
+// æ ¡å‡†é›¶æ¼‚
 void AdcSampleOffset(void)
 {
 	uint8_t i = 0;
@@ -38,7 +38,7 @@ void AdcSampleOffset(void)
 	AdcFilPara.OffsetCurW = Sum2 / 10;
 }
 
-// µçÁ÷Ô­Ê¼Êı¾İ²ÉÑù
+// ç”µæµåŸå§‹æ•°æ®é‡‡æ ·
 static void AdcSample(void)
 {
 	AdcPara.CurU = (float)(AdcFilPara.OffsetCurU - ADC_Value[0]) * I_GAIN;
@@ -50,7 +50,7 @@ static void AdcSample(void)
 	AdcPara.Vr = (float)ADC_Value[4];
 }
 
-// ²ÉÑùÊı¾İ¹ıµÍÍ¨ÂË²¨
+// é‡‡æ ·æ•°æ®è¿‡ä½é€šæ»¤æ³¢
 static void AdcSampleDeal(void)
 {
 	AdcFilPara.CurU = LPF_I_RUN_B * AdcFilPara.CurU + LPF_I_RUN_A * AdcPara.CurU;
@@ -60,7 +60,7 @@ static void AdcSampleDeal(void)
 	AdcFilPara.Temp = AdcFilPara.Temp * LPF_I_STOP_B + AdcPara.Temp * LPF_I_STOP_A;
 }
 
-// »ñµÃÏàµçÁ÷ºÍÄ¸ÏßµçÑ¹
+// è·å¾—ç›¸ç”µæµå’Œæ¯çº¿ç”µå‹
 void GetAdc(void)
 {
 	AdcSample();

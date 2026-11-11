@@ -5,36 +5,36 @@
 
 typedef struct
 {
-	float Iu;	 // ÈıÏàµçÁ÷A
-	float Iv;	 // ÈıÏàµçÁ÷B
-	float Iw;	 // ÈıÏàµçÂ·C
-	float Alpha; // ¶şÏà¾²Ö¹×ø±êÏµ Alpha Öá
-	float Beta;	 // ¶şÏà¾²Ö¹×ø±êÏµ Beta Öá
+	float Iu;	 // ä¸‰ç›¸ç”µæµA
+	float Iv;	 // ä¸‰ç›¸ç”µæµB
+	float Iw;	 // ä¸‰ç›¸ç”µè·¯C
+	float Alpha; // äºŒç›¸é™æ­¢åæ ‡ç³» Alpha è½´
+	float Beta;	 // äºŒç›¸é™æ­¢åæ ‡ç³» Beta è½´
 } CLARKE, *M_CLARKE;
 
 typedef struct
 {
-	float Alpha; // ¶şÏà¾²Ö¹×ø±êÏµ Alpha Öá
-	float Beta;	 // ¶şÏà¾²Ö¹×ø±êÏµ Beta Öá
-	float Theta; // µç»úµç½Ç¶È
-	float Ds;	 // µç»ú¶şÏàĞı×ª×ø±êÏµÏÂµÄdÖáµçÁ÷
-	float Qs;	 // µç»ú¶şÏàĞı×ª×ø±êÏµÏÂµÄqÖáµçÁ÷
+	float Alpha; // äºŒç›¸é™æ­¢åæ ‡ç³» Alpha è½´
+	float Beta;	 // äºŒç›¸é™æ­¢åæ ‡ç³» Beta è½´
+	float Theta; // ç”µæœºç”µè§’åº¦
+	float Ds;	 // ç”µæœºäºŒç›¸æ—‹è½¬åæ ‡ç³»ä¸‹çš„dè½´ç”µæµ
+	float Qs;	 // ç”µæœºäºŒç›¸æ—‹è½¬åæ ‡ç³»ä¸‹çš„qè½´ç”µæµ
 } PARK, *M_PARK;
 
 typedef struct
 {
-	float Alpha; // ¶şÏà¾²Ö¹×ø±êÏµ Alpha Öá
-	float Beta;	 // ¶şÏà¾²Ö¹×ø±êÏµ Beta Öá
-	float Theta; // µç»úµç½Ç¶È
-	float Ds;	 // µç»ú¶şÏàĞı×ª×ø±êÏµÏÂµÄdÖáµçÁ÷
-	float Qs;	 // µç»ú¶şÏàĞı×ª×ø±êÏµÏÂµÄqÖáµçÁ÷
+	float Alpha; // äºŒç›¸é™æ­¢åæ ‡ç³» Alpha è½´
+	float Beta;	 // äºŒç›¸é™æ­¢åæ ‡ç³» Beta è½´
+	float Theta; // ç”µæœºç”µè§’åº¦
+	float Ds;	 // ç”µæœºäºŒç›¸æ—‹è½¬åæ ‡ç³»ä¸‹çš„dè½´ç”µæµ
+	float Qs;	 // ç”µæœºäºŒç›¸æ—‹è½¬åæ ‡ç³»ä¸‹çš„qè½´ç”µæµ
 } IPARK, *M_IPARK;
 
-#define CLARKE_DEFAULTS {0, 0, 0, 0, 0} // CLARK³õÊ¼»¯²ÎÊı
-#define PARK_DEFAULTS {0, 0, 0, 0, 0}	// PARK³õÊ¼»¯²ÎÊı
-#define IPARK_DEFAULTS {0, 0, 0, 0, 0}	// IPARK³õÊ¼»¯²ÎÊı
+#define CLARKE_DEFAULTS {0, 0, 0, 0, 0} // CLARKåˆå§‹åŒ–å‚æ•°
+#define PARK_DEFAULTS {0, 0, 0, 0, 0}	// PARKåˆå§‹åŒ–å‚æ•°
+#define IPARK_DEFAULTS {0, 0, 0, 0, 0}	// IPARKåˆå§‹åŒ–å‚æ•°
 
-/* °´ÕÕ¹«Ê½¼ÆËãTx+Ty¿ÉÄÜ»á´óÓÚTs,ËùÒÔĞèÒª¶ÔÊµ¼ÊµÄTxºÍTy½øĞĞĞŞÕı */
+/* æŒ‰ç…§å…¬å¼è®¡ç®—Tx+Tyå¯èƒ½ä¼šå¤§äºTs,æ‰€ä»¥éœ€è¦å¯¹å®é™…çš„Txå’ŒTyè¿›è¡Œä¿®æ­£ */
 #define MODIFY_TX_TY(x, y, z, s) \
 	{                            \
 		z = x + y;               \
@@ -47,25 +47,25 @@ typedef struct
 
 typedef struct
 {
-	float Ualpha;	   // ¶şÏà¾²Ö¹×ø±êÏµalpha-Öá
-	float Ubeta;	   // ¶şÏà¾²Ö¹×ø±êÏµbeta-Öá
-	float Ta;		   // ÈıÏàÊ¸Á¿Õ¼¿Õ±ÈTa
-	float Tb;		   // ÈıÏàÊ¸Á¿Õ¼¿Õ±ÈTb
-	float Tc;		   // ÈıÏàÊ¸Á¿Õ¼¿Õ±ÈTc
-	float u1;		   // ÈıÏà¾²Ö¹×ø±êÏµµÄµçÑ¹temp1
-	float u2;		   // ÈıÏà¾²Ö¹×ø±êÏµµÄµçÑ¹temp2
-	float u3;		   // ÈıÏà¾²Ö¹×ø±êÏµµÄµçÑ¹temp3
-	float T0;		   // ÁãÊ¸Á¿×÷ÓÃÊ±¼ä
-	uint8_t VecSector; // Ê¸Á¿¿Õ¼äÉÈÇøºÅ
+	float Ualpha;	   // äºŒç›¸é™æ­¢åæ ‡ç³»alpha-è½´
+	float Ubeta;	   // äºŒç›¸é™æ­¢åæ ‡ç³»beta-è½´
+	float Ta;		   // ä¸‰ç›¸çŸ¢é‡å ç©ºæ¯”Ta
+	float Tb;		   // ä¸‰ç›¸çŸ¢é‡å ç©ºæ¯”Tb
+	float Tc;		   // ä¸‰ç›¸çŸ¢é‡å ç©ºæ¯”Tc
+	float u1;		   // ä¸‰ç›¸é™æ­¢åæ ‡ç³»çš„ç”µå‹temp1
+	float u2;		   // ä¸‰ç›¸é™æ­¢åæ ‡ç³»çš„ç”µå‹temp2
+	float u3;		   // ä¸‰ç›¸é™æ­¢åæ ‡ç³»çš„ç”µå‹temp3
+	float T0;		   // é›¶çŸ¢é‡ä½œç”¨æ—¶é—´
+	uint8_t VecSector; // çŸ¢é‡ç©ºé—´æ‰‡åŒºå·
 } SVPWM, *M_SVPWM;
 
-#define SVPWM_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // ³õÊ¼SVPWM»¯²ÎÊı
+#define SVPWM_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // åˆå§‹SVPWMåŒ–å‚æ•°
 
 extern SVPWM Svpwm;
 
 void SvpwmCal(M_SVPWM pv);
 
-void ClarkeCale(M_CLARKE pv); // Clark±ä»»
-void ParkCale(M_PARK pv);	  // Park±ä»»
-void IPARK_Cale(M_IPARK pv);  // Park·´±ä»»
+void ClarkeCale(M_CLARKE pv); // Clarkå˜æ¢
+void ParkCale(M_PARK pv);	  // Parkå˜æ¢
+void IPARK_Cale(M_IPARK pv);  // Parkåå˜æ¢
 #endif

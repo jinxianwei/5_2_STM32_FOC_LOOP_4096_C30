@@ -7,76 +7,76 @@
 
 typedef struct
 {
-	float theta;		 // HFI¹Û²âµÄ½Ç¶È
-	float theta_err;	 // HFI¹Û²âµÄ½Ç¶ÈÎó²î
-	float Ialpha_last;	 // ÉÏÒ»´Î²ÉÑùµÄ¦ÁÖáµçÁ÷
-	float Ibeta_last;	 // ÉÏÒ»´Î²ÉÑùµÄ¦ÂÖáµçÁ÷
-	float ialpha_h;		 // ¦ÁÖá¸ßÆµµçÁ÷·ÖÁ¿
-	float ibeta_h;		 // ¦ÂÖá¸ßÆµµçÁ÷·ÖÁ¿
-	float ialpha_h_last; // ÉÏÒ»´ÎµÄ¦ÁÖá¸ßÆµµçÁ÷·ÖÁ¿
-	float ibeta_h_last;	 // ÉÏÒ»´ÎµÄ¦ÂÖá¸ßÆµµçÁ÷·ÖÁ¿
-	float ialpha_f;		 // ¦ÁÖáµÍÆµµçÁ÷·ÖÁ¿
-	float ibeta_f;		 // ¦ÂÖáµÍÆµµçÁ÷·ÖÁ¿
-	float Ialpha_h;		 // ¾­¹ı°üÂç¼ì²âºóµÄ¦ÁÖá¸ßÆµµçÁ÷·ÖÁ¿
-	float Ibeta_h;		 // ¾­¹ı°üÂç¼ì²âºóµÄ¦ÂÖá¸ßÆµµçÁ÷·ÖÁ¿
-	float Idf;			 // dÖáµÍÆµµçÁ÷
-	float Iqf;			 // qÖáµÍÆµµçÁ÷
+	float theta;		 // HFIè§‚æµ‹çš„è§’åº¦
+	float theta_err;	 // HFIè§‚æµ‹çš„è§’åº¦è¯¯å·®
+	float Ialpha_last;	 // ä¸Šä¸€æ¬¡é‡‡æ ·çš„Î±è½´ç”µæµ
+	float Ibeta_last;	 // ä¸Šä¸€æ¬¡é‡‡æ ·çš„Î²è½´ç”µæµ
+	float ialpha_h;		 // Î±è½´é«˜é¢‘ç”µæµåˆ†é‡
+	float ibeta_h;		 // Î²è½´é«˜é¢‘ç”µæµåˆ†é‡
+	float ialpha_h_last; // ä¸Šä¸€æ¬¡çš„Î±è½´é«˜é¢‘ç”µæµåˆ†é‡
+	float ibeta_h_last;	 // ä¸Šä¸€æ¬¡çš„Î²è½´é«˜é¢‘ç”µæµåˆ†é‡
+	float ialpha_f;		 // Î±è½´ä½é¢‘ç”µæµåˆ†é‡
+	float ibeta_f;		 // Î²è½´ä½é¢‘ç”µæµåˆ†é‡
+	float Ialpha_h;		 // ç»è¿‡åŒ…ç»œæ£€æµ‹åçš„Î±è½´é«˜é¢‘ç”µæµåˆ†é‡
+	float Ibeta_h;		 // ç»è¿‡åŒ…ç»œæ£€æµ‹åçš„Î²è½´é«˜é¢‘ç”µæµåˆ†é‡
+	float Idf;			 // dè½´ä½é¢‘ç”µæµ
+	float Iqf;			 // qè½´ä½é¢‘ç”µæµ
 	float Ids;
 	float Iqs;
-	float Iq_last;	  // qÖáÉÏ´Î²ÉÑùµçÁ÷
-	float Id_last;	  // dÖáÉÏ´Î²ÉÑùµçÁ÷
-	float Idh;		  // dÖá¸ßÆµÏìÓ¦µçÁ÷
-	int8_t Uin;		  // dÖá×¢ÈëµÄ¸ßÆµµçÑ¹
-	int8_t SIGN;	  // ·ûºÅº¯ÊıºóµÄ½á¹û
-	float theta_Init; // ³õÊ¼½Ç¶È
+	float Iq_last;	  // qè½´ä¸Šæ¬¡é‡‡æ ·ç”µæµ
+	float Id_last;	  // dè½´ä¸Šæ¬¡é‡‡æ ·ç”µæµ
+	float Idh;		  // dè½´é«˜é¢‘å“åº”ç”µæµ
+	int8_t Uin;		  // dè½´æ³¨å…¥çš„é«˜é¢‘ç”µå‹
+	int8_t SIGN;	  // ç¬¦å·å‡½æ•°åçš„ç»“æœ
+	float theta_Init; // åˆå§‹è§’åº¦
 } HFI_Cal, *p_HFI;
 
-#define HFI_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // ×´Ì¬²ÎÊı³õÊ¼»¯
+#define HFI_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // çŠ¶æ€å‚æ•°åˆå§‹åŒ–
 
 typedef struct
 {
-	float Kp;			  // ËøÏà»·PI¿ØÖÆÆ÷Kp
-	double Ki;			  // ËøÏà»·PI¿ØÖÆÆ÷Ki
-	float Theta_Err;	  // ½Ç¶ÈÎó²î
-	float Theta_Err_last; // ÉÏÒ»´Î½Ç¶ÈÎó²î
-	float Omega;		  // µç½ÇËÙ¶È
-	float Omega_F;		  // ÂË²¨ºóµÄµç½ÇËÙ¶È
-	float Theta;		  // ËøÏà»·¼ÆËãµÃµ½µÄµç½Ç¶È
-	float Angle;		  // ¾­¹ı½Ç¶È²¹³¥µÄµç½Ç¶È
+	float Kp;			  // é”ç›¸ç¯PIæ§åˆ¶å™¨Kp
+	double Ki;			  // é”ç›¸ç¯PIæ§åˆ¶å™¨Ki
+	float Theta_Err;	  // è§’åº¦è¯¯å·®
+	float Theta_Err_last; // ä¸Šä¸€æ¬¡è§’åº¦è¯¯å·®
+	float Omega;		  // ç”µè§’é€Ÿåº¦
+	float Omega_F;		  // æ»¤æ³¢åçš„ç”µè§’é€Ÿåº¦
+	float Theta;		  // é”ç›¸ç¯è®¡ç®—å¾—åˆ°çš„ç”µè§’åº¦
+	float Angle;		  // ç»è¿‡è§’åº¦è¡¥å¿çš„ç”µè§’åº¦
 } HFI_PLL, *p_HFI_PLL;
 
-#define HFI_PLL_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0}; // ³õÊ¼»¯²ÎÊı
+#define HFI_PLL_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0}; // åˆå§‹åŒ–å‚æ•°
 
 typedef struct
 {
-	float Kp;			  // ËøÏà»·PI¿ØÖÆÆ÷Kp
-	double Ki;			  // ËøÏà»·PI¿ØÖÆÆ÷Ki
-	float Theta_Err;	  // ½Ç¶ÈÎó²î
-	float Theta_Err_last; // ÉÏÒ»´Î½Ç¶ÈÎó²î
-	float Omega;		  // µç½ÇËÙ¶È
-	float Omega_F;		  // ÂË²¨ºóµÄµç½ÇËÙ¶È
-	float Theta;		  // ËøÏà»·¼ÆËãµÃµ½µÄµç½Ç¶È
-	float Angle;		  // ¾­¹ı½Ç¶È²¹³¥µÄµç½Ç¶È
+	float Kp;			  // é”ç›¸ç¯PIæ§åˆ¶å™¨Kp
+	double Ki;			  // é”ç›¸ç¯PIæ§åˆ¶å™¨Ki
+	float Theta_Err;	  // è§’åº¦è¯¯å·®
+	float Theta_Err_last; // ä¸Šä¸€æ¬¡è§’åº¦è¯¯å·®
+	float Omega;		  // ç”µè§’é€Ÿåº¦
+	float Omega_F;		  // æ»¤æ³¢åçš„ç”µè§’é€Ÿåº¦
+	float Theta;		  // é”ç›¸ç¯è®¡ç®—å¾—åˆ°çš„ç”µè§’åº¦
+	float Angle;		  // ç»è¿‡è§’åº¦è¡¥å¿çš„ç”µè§’åº¦
 
-	float Theta_last; // ÉÏÒ»´ÎµÄµç½Ç¶È
+	float Theta_last; // ä¸Šä¸€æ¬¡çš„ç”µè§’åº¦
 	float Omega2;
 	float Omega2_F;
 } PLL, *p_PLL;
 extern PLL PllSmoPara;
 extern PLL PllHfiPara;
 
-#define PLL_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // ³õÊ¼»¯²ÎÊı
+#define PLL_DEFAULTS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // åˆå§‹åŒ–å‚æ•°
 
 extern bool HfiUinFlag;
 
 extern HFI_Cal HFI;
 
-void HfiAngleCale(p_HFI pv);		  // HFI½Ç¶ÈÊ¶±ğ
-void HFI_Injection(void);			  // HFI²âÊÔ£¬×¢Èë¸ßÆµ·½²¨Âö³å
-void HfiInitTheta(void);			  // HFI³õÊ¼½Ç¶ÈÊ¶±ğ
-void HfiSpdCloseLoop(void);			  // HFIËÙ¶È±Õ»·
-void HfiObserver(float Id, float Iq); // ¸ßÆµ·½²¨×¢Èë¹Û²âÆ÷
-void ExtractIdqF(void);				  // ÌáÈ¡µÍÆµµçÁ÷·ÖÁ¿
+void HfiAngleCale(p_HFI pv);		  // HFIè§’åº¦è¯†åˆ«
+void HFI_Injection(void);			  // HFIæµ‹è¯•ï¼Œæ³¨å…¥é«˜é¢‘æ–¹æ³¢è„‰å†²
+void HfiInitTheta(void);			  // HFIåˆå§‹è§’åº¦è¯†åˆ«
+void HfiSpdCloseLoop(void);			  // HFIé€Ÿåº¦é—­ç¯
+void HfiObserver(float Id, float Iq); // é«˜é¢‘æ–¹æ³¢æ³¨å…¥è§‚æµ‹å™¨
+void ExtractIdqF(void);				  // æå–ä½é¢‘ç”µæµåˆ†é‡
 void PllCale(p_PLL pv, float alpha, float beta);
 
 #endif

@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
-* �1�7�0�4�1�7�1�7�1�7�1�7�1�7tim_drv.c
-* �1�7�1�7  �1�7�1�3�1�7�1�7�1�7�1�7�1�7�1�7�1�7
-* �1�7�1�7  �1�7�1�3�1�72024/06/20
-* �0�5  �1�7�1�7�1�7�1�7�1�7�1�7�0�2�1�7�1�7�1�7�1�7�1�7�1�7
+* 文件名：tim_drv.c
+* 作  者：？？？
+* 日  期：2024/06/20
+* 说  明：定时器任务
 ***********************************************************************
 */
 
@@ -114,7 +114,7 @@ void MotorSpeedGet(void)
 
 	Motor.speed_M_rpm = SpeedMrpmFil;
 
-	Motor.speed_E_rpm = Motor.speed_M_rpm * Motor.P; // ����ٶ�? = ��е���ٶ� * ������
+	Motor.speed_E_rpm = Motor.speed_M_rpm * Motor.P;
 	EnCoSpeed.EncoLastCnt = EnCoSpeed.EncoderCnt;
 }
 
@@ -152,21 +152,20 @@ uint8_t MotorEncoderCalibrateElectricalZero(void)
 	return 1U;
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // �1�7�1�7�0�2�1�7�1�7�1�7�1�7�1�7�1�7�1�7�؁0�9�1�3�1�7�1�7�1�7�1�7�1�7(htim:�1�7�1�7�0�2�1�7�1�7�1�7�1�7�1�7)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) // 定时器更新中断回调函数(htim:定时器句柄)
 {
-	// update �1�7�0�4�1�7�1�7�1�7�1�7�1�7�1�7�1�7�1�7�1�7�1�7
-	if (htim == (&htim1)) // FOC�1�7�1�7�1�7�1�7		20KHz
+	if (htim == (&htim1)) // FOC控制		20KHz
 	{
-		GetAdc(); // �1�7�1�7�0�0�1�7�1�7�1�7�1�7
-		AxisDq(); // �1�7�1�7�1�7�1�7�1�7�1�7�� // TODO: �1�7�1�7�1�7�1�7�1�7�1�7�1�7�1�7�1�7MotorAngleGet(),�1�7�1�7�1�7�1�7�1�7�0�8�1�7
+		GetAdc(); // 获取电流
+		AxisDq(); // 坐标轴变换(内含电角度的获取)
 
 		EnCoSpeed.SpeedClock++;
-		if (EnCoSpeed.SpeedClock == SPEED_CNT) // �1�7�1�7�1�7�1�7�0�5�1�7�ń1�7�1�7�0�8�1�7�1�9�1�7�1�7�0�3�1�7�1�7�1�7�1�7�1�7�0�1�1�7�1�7�1�7�Á0�9�1�7�1�7�1�7
+		if (EnCoSpeed.SpeedClock == SPEED_CNT) // 计算一次电机转速
 		{
 			EnCoSpeed.SpeedClock %= SPEED_CNT;
-			MotorSpeedGet(); // �1�7�1�8�0�6�1�7�0�0
+			MotorSpeedGet(); // 速度获取
 		}
 
-		MotorModeSel(); // �1�7�1�7�1�7�1�7�0�0�0�4�0�5�1�7�1�7
+		MotorModeSel(); // 控制模式选择
 	}
 }

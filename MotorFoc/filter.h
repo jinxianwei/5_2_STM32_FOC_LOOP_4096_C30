@@ -5,12 +5,12 @@
 #include "stdint.h"
 #include "arm_math.h"
 
-#define NumStages 2					  /* 2½×IIRÂË²¨µÄ¸öÊı */
-#define BLOCK_SIZE 1				  /* µ÷ÓÃÒ»´Îarm_biquad_cascade_df1_f32´¦ÀíµÄ²ÉÑùµã¸öÊı */
-#define ScaleValue_BPF 0.02008336556f /*Ëõ·ÅÏµÊı=BPF¶¨±êÖµ^2*/
+#define NumStages 2					  /* 2é˜¶IIRæ»¤æ³¢çš„ä¸ªæ•° */
+#define BLOCK_SIZE 1				  /* è°ƒç”¨ä¸€æ¬¡arm_biquad_cascade_df1_f32å¤„ç†çš„é‡‡æ ·ç‚¹ä¸ªæ•° */
+#define ScaleValue_BPF 0.02008336556f /*ç¼©æ”¾ç³»æ•°=BPFå®šæ ‡å€¼^2*/
 
 /*
-//BPF¶¨±êÖµ:
+//BPFå®šæ ‡å€¼:
 0.141715791513194855344437428357196040452
 */
 

@@ -1,9 +1,9 @@
 /*
 ***********************************************************************
-* ÎÄ¼şÃû£ºadc_drv.h
-* ×÷  Õß£º???
-* ÈÕ  ÆÚ£º2025/10/23
-* Ëµ  Ã÷£ºADCÇı¶¯
+* æ–‡ä»¶åï¼šadc_drv.h
+* ä½œ  è€…ï¼š???
+* æ—¥  æœŸï¼š2025/10/23
+* è¯´  æ˜ï¼šADCé©±åŠ¨
 ***********************************************************************
 */
 
@@ -14,24 +14,24 @@
 
 typedef struct
 {
-	float Vbus;	   // Ä¸ÏßµçÑ¹
-	float Vr;	   // µçÎ»Æ÷
-	uint16_t Temp; // ÎÂ¶È
+	float Vbus;	   // æ¯çº¿ç”µå‹
+	float Vr;	   // ç”µä½å™¨
+	uint16_t Temp; // æ¸©åº¦
 
-	float CurU; // UÏàµçÁ÷
-	float CurV; // VÏàµçÁ÷
-	float CurW; // WÏàµçÁ÷
+	float CurU; // Uç›¸ç”µæµ
+	float CurV; // Vç›¸ç”µæµ
+	float CurW; // Wç›¸ç”µæµ
 
-	int16_t OffsetCurU; // UÏàµçÁ÷Æ«ÖÃÖµ
-	int16_t OffsetCurV; // VÏàµçÁ÷Æ«ÖÃÖµ
-	int16_t OffsetCurW; // WÏàµçÁ÷Æ«ÖÃÖµ
+	int16_t OffsetCurU; // Uç›¸ç”µæµåç½®å€¼
+	int16_t OffsetCurV; // Vç›¸ç”µæµåç½®å€¼
+	int16_t OffsetCurW; // Wç›¸ç”µæµåç½®å€¼
 } ADC_Sample;
 
-#define ADC_Sample_DEFAULTS {0, 0, 0, 0, 0, 0} // ³õÊ¼»¯²ÎÊı
+#define ADC_Sample_DEFAULTS {0, 0, 0, 0, 0, 0} // åˆå§‹åŒ–å‚æ•°
 
 typedef struct
 {
-	float Vbus; // Ä¸ÏßµçÑ¹
+	float Vbus; // æ¯çº¿ç”µå‹
 	float Temp;
 
 	float CurU;
@@ -43,7 +43,7 @@ typedef struct
 	int16_t OffsetCurW;
 } ADC_Sample_F;
 
-#define ADC_Sample_F_DEFAULTS {0, 0, 0, 0, 0, 0} // ³õÊ¼»¯²ÎÊı
+#define ADC_Sample_F_DEFAULTS {0, 0, 0, 0, 0, 0} // åˆå§‹åŒ–å‚æ•°
 
 typedef struct
 {
@@ -56,14 +56,14 @@ typedef struct
 
 #define Voltage_Compensation_DEFAULTS {0, 0, 0, 0, 0}
 
-extern uint16_t ADC_Value[5]; // ADC½ÓÊÕÊı×é
-extern uint8_t NTC_ERROR;	  // NTCÎÂ¶È±¨¾¯
+extern uint16_t ADC_Value[5]; // ADCæ¥æ”¶æ•°ç»„
+extern uint8_t NTC_ERROR;	  // NTCæ¸©åº¦æŠ¥è­¦
 
 extern ADC_Sample AdcPara;
 extern ADC_Sample_F AdcFilPara;
 
-void AdcSampleOffset(void);						 // Ğ£×¼ÁãÆ¯
-void GetAdc(void);								 // »ñµÃÂË²¨ºó²ÉÑùÊı¾İ
-void TempTrans(uint16_t ADC_value, float *temp); // NTCÎÂ¶È²ÉÑù
+void AdcSampleOffset(void);						 // æ ¡å‡†é›¶æ¼‚
+void GetAdc(void);								 // è·å¾—æ»¤æ³¢åé‡‡æ ·æ•°æ®
+void TempTrans(uint16_t ADC_value, float *temp); // NTCæ¸©åº¦é‡‡æ ·
 
 #endif

@@ -4,13 +4,13 @@ HFI_Cal HFI = HFI_DEFAULTS;
 PLL PllSmoPara = PLL_DEFAULTS;
 PLL PllHfiPara = PLL_DEFAULTS;
 
-// Õı½»ËøÏà»·
+// æ­£äº¤é”ç›¸ç¯
 void PllCale(p_PLL pv, float alpha, float beta)
 {
-	float SmoThaComsat = 0; // ½Ç¶È²¹³¥
+	float SmoThaComsat = 0; // è§’åº¦è¡¥å¿
 
-	pv->Theta_Err = -(alpha * arm_cos_f32(pv->Theta)) + (-beta) * arm_sin_f32(pv->Theta);	  // Í¨¹ıÊ¸Á¿²æ³Ë»òÕß½Ç¶ÈÎó²î
-	pv->Omega += pv->Kp * (pv->Theta_Err - pv->Theta_Err_last) + TS * pv->Ki * pv->Theta_Err; // ¾­¹ıPIµ÷½ÚÆ÷»ñµÃ×ªËÙ£¬×ªËÙÎª»¡¶ÈÖÆµç½ÇËÙ¶È
+	pv->Theta_Err = -(alpha * arm_cos_f32(pv->Theta)) + (-beta) * arm_sin_f32(pv->Theta);	  // é€šè¿‡çŸ¢é‡å‰ä¹˜æˆ–è€…è§’åº¦è¯¯å·®
+	pv->Omega += pv->Kp * (pv->Theta_Err - pv->Theta_Err_last) + TS * pv->Ki * pv->Theta_Err; // ç»è¿‡PIè°ƒèŠ‚å™¨è·å¾—è½¬é€Ÿï¼Œè½¬é€Ÿä¸ºå¼§åº¦åˆ¶ç”µè§’é€Ÿåº¦
 
 	if (SensorLess.Observer == 3)
 	{
@@ -22,14 +22,14 @@ void PllCale(p_PLL pv, float alpha, float beta)
 	}
 
 	pv->Theta_Err_last = pv->Theta_Err;
-	pv->Theta += TS * pv->Omega; // ¶Ôµç½ÇËÙ¶È½øĞĞ»ı·Ö»ñµÃµç½Ç¶È
-	// ¶Ôµç½Ç¶È½øĞĞÏŞ·ù
+	pv->Theta += TS * pv->Omega; // å¯¹ç”µè§’é€Ÿåº¦è¿›è¡Œç§¯åˆ†è·å¾—ç”µè§’åº¦
+	// å¯¹ç”µè§’åº¦è¿›è¡Œé™å¹…
 	if (pv->Theta >= PIX2)
 		pv->Theta -= PIX2;
 	else if (pv->Theta < 0)
 		pv->Theta += PIX2;
 	/*
-		if(Theta_CNT == 4)				//Ö´ĞĞÆµÂÊ2KHz
+		if(Theta_CNT == 4)				//æ‰§è¡Œé¢‘ç‡2KHz
 		{
 			Theta_CNT = 0;
 
@@ -53,20 +53,20 @@ void PllCale(p_PLL pv, float alpha, float beta)
 		}
 	*/
 
-	// ÔÚSMOÖĞ£¬·´µç¶¯ÊÆĞèÒª½øĞĞLPF£¬Òò´Ë´æÔÚÖÍºó£¬Í¨¹ı¹Û²âµç½ÇËÙ¶È¶Ôµç½Ç¶È½øĞĞ²¹³¥
+	// åœ¨SMOä¸­ï¼Œåç”µåŠ¨åŠ¿éœ€è¦è¿›è¡ŒLPFï¼Œå› æ­¤å­˜åœ¨æ»åï¼Œé€šè¿‡è§‚æµ‹ç”µè§’é€Ÿåº¦å¯¹ç”µè§’åº¦è¿›è¡Œè¡¥å¿
 	SmoThaComsat = my_atan(my_abs(pv->Omega) / (-wc));
 	pv->Angle = pv->Theta - SmoThaComsat;
-	// ¶Ô²¹³¥ºóµÄµç½Ç¶È½øĞĞÏŞ·ù
+	// å¯¹è¡¥å¿åçš„ç”µè§’åº¦è¿›è¡Œé™å¹…
 	if (pv->Angle >= PIX2)
 		pv->Angle -= PIX2;
 	else if (pv->Angle < 0)
 		pv->Angle += PIX2;
 }
 
-// HFI½Ç¶È¼ÆËã
+// HFIè§’åº¦è®¡ç®—
 void HfiAngleCale(p_HFI pv)
 {
-	// ÌáÈ¡¸ßÆµµçÁ÷·ÖÁ¿
+	// æå–é«˜é¢‘ç”µæµåˆ†é‡
 	pv->ialpha_h_last = pv->ialpha_h;
 	pv->ibeta_h_last = pv->ibeta_h;
 
@@ -80,14 +80,14 @@ void HfiAngleCale(p_HFI pv)
 
 	pv->SIGN = -Sign(pv->Uin);
 
-	// °üÂç¼ì²â
+	// åŒ…ç»œæ£€æµ‹
 	pv->Ialpha_h = (pv->ialpha_h - pv->ialpha_h_last) * pv->SIGN;
 	pv->Ibeta_h = (pv->ibeta_h - pv->ibeta_h_last) * pv->SIGN;
 
 	//	pv->theta = my_atan2(pv->Ialpha_h, pv->Ibeta_h);
 	PllCale((p_PLL)&PllHfiPara, -pv->Ibeta_h, pv->Ialpha_h);
 }
-// ³õÊ¼½Ç¶ÈÊ¶±ğ
+// åˆå§‹è§’åº¦è¯†åˆ«
 bool HfiUinFlag;
 
 void HfiInitTheta(void)
@@ -100,40 +100,40 @@ void HfiInitTheta(void)
 		HFI_Clock++;
 	HfiUinFlag = !HfiUinFlag;
 	//	HFI_Angle_Cale((p_HFI)&HFI);
-	// ÌáÈ¡µÍÆµµçÁ÷·ÖÁ¿
+	// æå–ä½é¢‘ç”µæµåˆ†é‡
 	HFI.Idf = (Park.Ds + HFI.Id_last) * 0.5f;
 	HFI.Iqf = (Park.Qs + HFI.Iq_last) * 0.5f;
 	//	HFI.Idf = HFI.Idf*LPF_HFI_I_B + HFI.Ids*LPF_HFI_I_A;
 	//	HFI.Iqf = HFI.Iqf*LPF_HFI_I_B + HFI.Iqs*LPF_HFI_I_A;
-	// ÌáÈ¡¸ßÆµµçÁ÷·ÖÁ¿
+	// æå–é«˜é¢‘ç”µæµåˆ†é‡
 	HFI.Idh = (Park.Ds - HFI.Id_last) * 0.5f;
 
 	HFI.Id_last = Park.Ds;
 	HFI.Iq_last = Park.Qs;
 
-	if (HFI_Clock < 400) // 20ms£¬Ê¶±ğµÄ³õÊ¼µç½Ç¶ÈÊÕÁ²
+	if (HFI_Clock < 400) // 20msï¼Œè¯†åˆ«çš„åˆå§‹ç”µè§’åº¦æ”¶æ•›
 	{
 		pi_id.Ref = 0;
 		pi_id.Fbk = HFI.Idf;
 		PiController((M_PI_Control)&pi_id);
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 	}
-	else if (HFI_Clock == 400) // ³õÊ¼µç½Ç¶È¸³Öµ
+	else if (HFI_Clock == 400) // åˆå§‹ç”µè§’åº¦èµ‹å€¼
 	{
-		HFI.theta_Init = PllHfiPara.Theta; // ³õÊ¼½Ç¶È¸³Öµ
+		HFI.theta_Init = PllHfiPara.Theta; // åˆå§‹è§’åº¦èµ‹å€¼
 		pi_id.Ref = 0;
 		pi_id.Fbk = HFI.Idf;
 		PiController((M_PI_Control)&pi_id);
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 	}
-	else if ((HFI_Clock > 400) && (HFI_Clock <= 600)) // 10ms,IdÆ«ÖÃµçÁ÷×¢Èë
+	else if ((HFI_Clock > 400) && (HFI_Clock <= 600)) // 10ms,Idåç½®ç”µæµæ³¨å…¥
 	{
 		pi_id.Ref = HFI_ID_OFFSET;
 		pi_id.Fbk = HFI.Idf;
 		PiController((M_PI_Control)&pi_id);
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 	}
-	else if ((HFI_Clock > 600) && (HFI_Clock <= 610)) // ÀÛ¼Æ ¸ßÆµµçÁ÷·ÖÁ¿*Id_offset
+	else if ((HFI_Clock > 600) && (HFI_Clock <= 610)) // ç´¯è®¡ é«˜é¢‘ç”µæµåˆ†é‡*Id_offset
 	{
 		pi_id.Ref = HFI_ID_OFFSET;
 		pi_id.Fbk = HFI.Idf;
@@ -141,21 +141,21 @@ void HfiInitTheta(void)
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 		Sum_Id1 += my_abs(HFI.Idh * HFI_ID_OFFSET);
 	}
-	else if ((HFI_Clock > 610) && (HFI_Clock <= 800)) // 10ms,IdÆ«Ö´µçÁ÷¹éÁã
+	else if ((HFI_Clock > 610) && (HFI_Clock <= 800)) // 10ms,Idåæ‰§ç”µæµå½’é›¶
 	{
 		pi_id.Ref = 0;
 		pi_id.Fbk = HFI.Idf;
 		PiController((M_PI_Control)&pi_id);
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 	}
-	else if ((HFI_Clock > 800) && (HFI_Clock <= 1000)) // 10ms,Id¸ºÆ«ÖÃµçÁ÷×¢Èë
+	else if ((HFI_Clock > 800) && (HFI_Clock <= 1000)) // 10ms,Idè´Ÿåç½®ç”µæµæ³¨å…¥
 	{
 		pi_id.Ref = -HFI_ID_OFFSET;
 		pi_id.Fbk = HFI.Idf;
 		PiController((M_PI_Control)&pi_id);
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 	}
-	else if ((HFI_Clock > 1000) && (HFI_Clock <= 1010)) // ÀÛ¼Æ ¸ßÆµµçÁ÷·ÖÁ¿*Id_offset
+	else if ((HFI_Clock > 1000) && (HFI_Clock <= 1010)) // ç´¯è®¡ é«˜é¢‘ç”µæµåˆ†é‡*Id_offset
 	{
 		pi_id.Ref = -HFI_ID_OFFSET;
 		pi_id.Fbk = HFI.Idf;
@@ -163,10 +163,10 @@ void HfiInitTheta(void)
 		//		pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 		Sum_Id2 += my_abs(-HFI.Idh * HFI_ID_OFFSET);
 	}
-	else if (HFI_Clock > 1010) // ³õÊ¼½Ç¶ÈÊ¶±ğ½áÊø£¬¸ù¾İSum_Id1&2´óĞ¡ÅĞ¶ÏÊÕÁ²ÔÚN¼«»¹ÊÇS¼«
+	else if (HFI_Clock > 1010) // åˆå§‹è§’åº¦è¯†åˆ«ç»“æŸï¼Œæ ¹æ®Sum_Id1&2å¤§å°åˆ¤æ–­æ”¶æ•›åœ¨Næè¿˜æ˜¯Sæ
 	{
 		HFI_Init_Angle_flag = 1;
-		if (Sum_Id1 < Sum_Id2) // ÊÕÁ²ÔÚS¼«£¬¶Ô½Ç¶È½øĞĞ²¹³¥
+		if (Sum_Id1 < Sum_Id2) // æ”¶æ•›åœ¨Sæï¼Œå¯¹è§’åº¦è¿›è¡Œè¡¥å¿
 		{
 			HFI.theta_Init = PllHfiPara.Theta + PI;
 			if (HFI.theta_Init > PIX2)
@@ -185,27 +185,27 @@ void HfiInitTheta(void)
 		HFI_Clock = 0;
 	}
 
-	// ×¢ÈëµÄ¸ßÆµ·½²¨µçÑ¹
+	// æ³¨å…¥çš„é«˜é¢‘æ–¹æ³¢ç”µå‹
 	if (HfiUinFlag)
 		HFI.Uin = HFI_UIN_OFFSET;
 	else
 		HFI.Uin = -HFI_UIN_OFFSET;
 
-	// IPARK¼ÆËã
+	// IPARKè®¡ç®—
 	Ipark.Theta = PllHfiPara.Theta;
 	Ipark.Qs = 0;
-	Ipark.Ds = pi_id.Out + HFI.Uin; // dÖá¸ßÆµ·½²¨×¢Èë
+	Ipark.Ds = pi_id.Out + HFI.Uin; // dè½´é«˜é¢‘æ–¹æ³¢æ³¨å…¥
 	IPARK_Cale((M_IPARK)&Ipark);
 }
 
-// HFIËÙ¶È±Õ»·
+// HFIé€Ÿåº¦é—­ç¯
 void HfiSpdCloseLoop(void)
 {
 	float ISpeed_Ref_EX = 0.0f;
 
-	SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;	 // ¶¨ÒåËÙ¶ÈµÄÌİ¶ÈÖµ
-	SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER; // ¶¨ÒåËÙ¶ÈµÄÌİ¶ÈÊ±¼ä
-	SpdRefGXieLv.XieLv_X = Para.SpeedRef;	 // ¶¨ÒåÌİ¶ÈÉÏÏŞ£¬¼´ËÙ¶È»·Ä¿±êËÙ¶È
+	SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;	 // å®šä¹‰é€Ÿåº¦çš„æ¢¯åº¦å€¼
+	SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER; // å®šä¹‰é€Ÿåº¦çš„æ¢¯åº¦æ—¶é—´
+	SpdRefGXieLv.XieLv_X = Para.SpeedRef;	 // å®šä¹‰æ¢¯åº¦ä¸Šé™ï¼Œå³é€Ÿåº¦ç¯ç›®æ ‡é€Ÿåº¦
 
 	if (HFI_Init_Angle_flag)
 	{
@@ -213,13 +213,13 @@ void HfiSpdCloseLoop(void)
 		if (SpdRefGXieLv.Timer_Count > SpdRefGXieLv.Grad_Timer)
 		{
 			SpdRefGXieLv.Timer_Count = 0;
-			GradXieLv((p_GXieLv)&SpdRefGXieLv); // Ìİ¶È¼ÆËã
+			GradXieLv((p_GXieLv)&SpdRefGXieLv); // æ¢¯åº¦è®¡ç®—
 		}
 		ISpeed_Ref_EX = Limit_Sat(SpdRefGXieLv.XieLv_Y, HFI_SPD_REF_MAX, -HFI_SPD_REF_MAX);
 	}
 
 	HfiUinFlag = !HfiUinFlag;
-	// ÌáÈ¡µÍÆµµçÁ÷·ÖÁ¿
+	// æå–ä½é¢‘ç”µæµåˆ†é‡
 	HFI.Idf = (Park.Ds + HFI.Id_last) * 0.5f;
 	HFI.Iqf = (Park.Qs + HFI.Iq_last) * 0.5f;
 	//	HFI.Idf = HFI.Idf*LPF_HFI_I_B + HFI.Ids*LPF_HFI_I_A;
@@ -228,42 +228,42 @@ void HfiSpdCloseLoop(void)
 	HFI.Id_last = Park.Ds;
 	HFI.Iq_last = Park.Qs;
 
-	// ËÙ¶È»·
+	// é€Ÿåº¦ç¯
 	if (Para.SpeedCalTime == SPD_CAL_PERIOD)
 	{
 		Para.SpeedCalTime %= SPD_CAL_PERIOD;
 
 		pi_spd.Ref = ISpeed_Ref_EX * Motor.P;
 		pi_spd.Fbk = PllHfiPara.Omega_F / PIX2 * 60;
-		PiController((M_PI_Control)&pi_spd); // ËÙ¶È»·
-											 //		pi_spd.OutF = pi_spd.OutF*LPF_I_RUN_B + pi_spd.Out*LPF_I_RUN_A; //»·Â·ÂË²¨ºóÊä³ö
+		PiController((M_PI_Control)&pi_spd); // é€Ÿåº¦ç¯
+											 //		pi_spd.OutF = pi_spd.OutF*LPF_I_RUN_B + pi_spd.Out*LPF_I_RUN_A; //ç¯è·¯æ»¤æ³¢åè¾“å‡º
 	}
 
-	// µçÁ÷»·
+	// ç”µæµç¯
 	pi_id.Ref = 0;
 	pi_id.Fbk = HFI.Idf;
 	PiController((M_PI_Control)&pi_id);
 	//	pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 
-	// IqÖá±Õ»·
+	// Iqè½´é—­ç¯
 	pi_iq.Ref = pi_spd.Out;
 	pi_iq.Fbk = HFI.Iqf;
 	PiController((M_PI_Control)&pi_iq);
 	//	pi_iq.OutF = pi_iq.OutF*LPF_I_RUN_B + pi_iq.Out*LPF_I_RUN_A;
 
-	// dÖá×¢ÈëµÄ¸ßÆµ·½²¨µçÑ¹
+	// dè½´æ³¨å…¥çš„é«˜é¢‘æ–¹æ³¢ç”µå‹
 	if (HfiUinFlag)
 		HFI.Uin = HFI_UIN_OFFSET;
 	else
 		HFI.Uin = -HFI_UIN_OFFSET;
 
-	// IPARK¼ÆËã
+	// IPARKè®¡ç®—
 	Ipark.Theta = PllHfiPara.Theta;
 	Ipark.Qs = pi_iq.Out;
 	Ipark.Ds = pi_id.Out + HFI.Uin;
 	IPARK_Cale((M_IPARK)&Ipark);
 }
-// ÌáÈ¡µÍÆµµçÁ÷·ÖÁ¿
+// æå–ä½é¢‘ç”µæµåˆ†é‡
 void ExtractIdqF(void)
 {
 	HFI.Idf = (Park.Ds + HFI.Id_last) * 0.5f;
@@ -275,33 +275,33 @@ void ExtractIdqF(void)
 	HFI.Iq_last = Park.Qs;
 }
 
-// HFIËÙ¶È»·£¬È«ËÙ¶ÈÎŞ¸Ğ¿ØÖÆÓÃ
+// HFIé€Ÿåº¦ç¯ï¼Œå…¨é€Ÿåº¦æ— æ„Ÿæ§åˆ¶ç”¨
 void HfiObserver(float Id, float Iq)
 {
 	HfiUinFlag = !HfiUinFlag;
 
-	// ËÙ¶È»·
+	// é€Ÿåº¦ç¯
 	if (Para.SpeedCalTime == SPD_CAL_PERIOD)
 	{
 		pi_spd.Ref = SensorLess.Speed_Ref;
 		pi_spd.Fbk = SensorLess.Speed_Fbk;
-		PiController((M_PI_Control)&pi_spd); // ËÙ¶È»·
-											 //		pi_spd.OutF = pi_spd.OutF*LPF_I_RUN_B + pi_spd.Out*LPF_I_RUN_A; //»·Â·ÂË²¨ºóÊä³ö
+		PiController((M_PI_Control)&pi_spd); // é€Ÿåº¦ç¯
+											 //		pi_spd.OutF = pi_spd.OutF*LPF_I_RUN_B + pi_spd.Out*LPF_I_RUN_A; //ç¯è·¯æ»¤æ³¢åè¾“å‡º
 	}
 
-	// µçÁ÷»·
+	// ç”µæµç¯
 	pi_id.Ref = 0;
 	pi_id.Fbk = Id;
 	PiController((M_PI_Control)&pi_id);
 	//	pi_id.OutF = pi_id.OutF*LPF_HFI_B + pi_id.Out*LPF_HFI_A;
 
-	// IqÖá±Õ»·
+	// Iqè½´é—­ç¯
 	pi_iq.Ref = pi_spd.Out;
 	pi_iq.Fbk = Iq;
 	PiController((M_PI_Control)&pi_iq);
 	//	pi_iq.OutF = pi_iq.OutF*LPF_I_RUN_B + pi_iq.Out*LPF_I_RUN_A;
 
-	// dÖá×¢ÈëµÄ¸ßÆµ·½²¨µçÑ¹
+	// dè½´æ³¨å…¥çš„é«˜é¢‘æ–¹æ³¢ç”µå‹
 	if (HfiUinFlag)
 		HFI.Uin = HFI_UIN_OFFSET;
 	else
@@ -312,7 +312,7 @@ void HfiObserver(float Id, float Iq)
 	//	IPARK_SMO_PVdq.Qs = pi_iq.Out;
 	//	IPARK_Cale((M_IPARK)&IPARK_SMO_PVdq);
 
-	// IPARK¼ÆËã
+	// IPARKè®¡ç®—
 	Ipark.Theta = SensorLess.theta;
 	Ipark.Qs = pi_iq.Out;
 	Ipark.Ds = pi_id.Out + HFI.Uin;
