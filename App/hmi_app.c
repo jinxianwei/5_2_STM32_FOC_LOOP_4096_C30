@@ -230,8 +230,10 @@ void SendToVofa(void)
 	Usart.VofaData[8] = AdcFilPara.CurU;	  // U相电流
 	Usart.VofaData[9] = AdcFilPara.CurV;	  // V相电流
 	Usart.VofaData[10] = AdcFilPara.CurW;	  // W相电流
-	Usart.VofaData[11] = TIM3->CNT;			  // 实际位置
-	Usart.VofaData[12] = Pos.P_Ref;			  // 目标位置
+	// Usart.VofaData[11] = TIM3->CNT;			  // 实际位置
+	// Usart.VofaData[12] = Pos.P_Ref;			  // 目标位置
+	Usart.VofaData[11] = Park.Ds; // D轴电流，用于做电流环闭环调参效果的验证
+	Usart.VofaData[12] = Park.Qs; // Q轴电流，用于做电流环闭环调参效果的验证
 	JustFloatSend(Usart.VofaData, 13, USART1);
 }
 

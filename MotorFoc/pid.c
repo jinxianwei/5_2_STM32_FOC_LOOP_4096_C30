@@ -37,6 +37,7 @@ void PiController(M_PI_Control pv)
 
 void PiParaInit(void)
 {
+	// TODO: 速度环和电流环的参数需要调整
 	pi_spd.Kp = Para.SpdLessKp;
 	pi_spd.Ki =Para.SpdLessKi;		   // 0.0001*10 / 0.2   T*SpeedLoopPrescaler/0.2
 	pi_spd.Umax = PI_MAX_SPD;  //  电流 10

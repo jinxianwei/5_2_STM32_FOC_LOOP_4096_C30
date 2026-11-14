@@ -22,7 +22,7 @@
 #define TIM3_PULSE /********************/ ENCODE_PULSE       // 定时器3重装载值
 
 // 电机参数
-#define MOTOR_P /***********************/ 10         // 电机极对数
+#define MOTOR_P /***********************/ 2         // 电机极对数
 #define MOTOR_Ls /**********************/ 0.0000423f // 电机自感
 #define MOTOR_Rs /**********************/ 0.1f       // 电机内阻
 
@@ -36,10 +36,10 @@
 // FOC参数
 #define SART_OF_3 /*********************/ 0.57735f
 #define SVPWM_KM /**********************/ (STAN_VOLTAGE_V * SART_OF_3)
-#define SVPWM_KM_BACKW /****************/ 0.1443376f // 倒数  1/(STAN_VOLTAGE_V*SART_OF_3)
-#define VBUS_S /************************/ 6.651f     //  (STAN_VOLTAGE_V*SART_OF_3*0.96)
-#define PI_MAX_Ud /*********************/ 6.0f       //  (STAN_VOLTAGE_V*SART_OF_3*0.92)   // 13.5  //12.347
-#define PI_MAX_Uq /*********************/ 6.0f       //  (STAN_VOLTAGE_V*SART_OF_3*0.92)
+#define SVPWM_KM_BACKW /****************/ 0.061858f // 倒数  1/(STAN_VOLTAGE_V*SART_OF_3)
+#define VBUS_S /************************/ (STAN_VOLTAGE_V*SART_OF_3*0.96)     //  (STAN_VOLTAGE_V*SART_OF_3*0.96)
+#define PI_MAX_Ud /*********************/ (STAN_VOLTAGE_V*SART_OF_3*0.92)        //  (STAN_VOLTAGE_V*SART_OF_3*0.92)   // 13.5  //12.347
+#define PI_MAX_Uq /*********************/ (STAN_VOLTAGE_V*SART_OF_3*0.92)       //  (STAN_VOLTAGE_V*SART_OF_3*0.92)
 #define PI_MAX_SPD /********************/ 10.0f      // 最大电流限制
 
 // 电机运行模式
@@ -59,7 +59,7 @@
 // IF强拖参数
 #define QT_ANGLE /**********************/ 210  // 强拖至角度（0——360）
 #define QT_FRQ /************************/ 20   // 强拖频率=PWM_FRQ/QT_FRQ
-#define QT_IF_MODE /********************/ 3    // 1——强拖至角度；2——强拖旋转；3——IF启功
+#define QT_IF_MODE /********************/ 2    // 1——强拖至角度；2——强拖旋转；3——IF启功
 #define IF_F_GRAD_TIMER /***************/ 10   // 定义角度改变频率的梯度时间
 #define IF_F_GRAD_0D1HZ /***************/ 0.1f // 定义角度改变频率的梯度值
 #define IF_FRE_MAX /********************/ 100  // IF角度改变上限值
@@ -81,7 +81,7 @@
 // 速度环参数
 #define SPD_REF_TIMER /*****************/ 30   // 定义目标速度改变的梯度时间
 #define SPD_REF_OD /********************/ 5.0f // 定义目标速度改变的梯度值
-#define SPD_REF_MAX /*******************/ 4000 // 目标速度上限值，机械角速度
+#define SPD_REF_MAX /*******************/ 12000 // 目标速度上限值，机械角速度
 
 // HFI高频注入参数
 #define HFI_UIN_OFFSET /****************/ 1.0f // HFI注入高频电压偏置
@@ -111,9 +111,9 @@
 #define PLL_KI_DEF /********************/ 72995.6f // PLL参数
 
 // 电压保护参数
-#define LOW_VOLTAGE_V /*****************/ 9.0f  // 低压保护
-#define STAN_VOLTAGE_V /****************/ 12.0f // 标准工作电压
-#define HIHG_VOLTAGE_V /****************/ 15.0f // 高压保护
+#define LOW_VOLTAGE_V /*****************/ 26.0f  // 低压保护
+#define STAN_VOLTAGE_V /****************/ 28.0f // 标准工作电压
+#define HIHG_VOLTAGE_V /****************/ 30.0f // 高压保护
 #define LV_PROTECT_TIME /***************/ 500   // 欠压保护检测时间, 单位: ms
 #define OV_PROTECT_TIME /***************/ 500   // 过压保护检测时间, 单位: ms
 
@@ -136,13 +136,13 @@
 
 // 堵转保护参数
 #define LOCK_TIME /*********************/ 500  // 堵转时间，单位：ms
-#define LOCK_CUR /**********************/ 2.0f // 堵转电流，单位：A
+#define LOCK_CUR /**********************/ 10.0f // 堵转电流，单位：A
 #define SPEED_PRO_TIME /****************/ 100  // 速度保护时间，单位：ms
 
 // 过流保护参数
-#define OVER_CURRENT /*******************/ 2.0f // 过流保护阈值
+#define OVER_CURRENT /*******************/ 10.0f // 过流保护阈值
 
 #define RGB_Luminance /*****************/ 4 // RGB LED亮度调节，一共8档(0~7)
-#define VR_OR_PC /**********************/ 1 // 电机命令方式: VR: 1 或 PC调速: 0
+#define VR_OR_PC /**********************/ 0 // 电机命令方式: VR: 1 或 PC调速: 0
 
 #endif

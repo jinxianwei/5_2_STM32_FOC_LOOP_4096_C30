@@ -20,7 +20,7 @@ uint8_t PostionToZeroDouble(void)
 
     HAL_Delay(100);
 
-    Svpwm.Ualpha = 0.5f; // 调零电压
+    Svpwm.Ualpha = 0.9f; // 调零电压
     Svpwm.Ubeta = 0.0f;
     SvpwmCal((M_SVPWM)&Svpwm); // 将Alpha和Beta电压带入计算SVPWM的占空比
     HAL_Delay(1000);
