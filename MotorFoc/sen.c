@@ -101,8 +101,8 @@ void SpeedCloseloop(int16_t SpeedRef, uint8_t UseRamp)
 #define ENC_MIN 1
 #define ENC_MAX 3999
 #define ENC_RANGE (ENC_MAX - ENC_MIN + 1) // 3999
-#define POS_MAX_SPEED 3000                // λ�û���������ת������ (RPM)
-#define POS_I_LIMIT 500                   // λ�û������޷�����ֹ����
+#define POS_MAX_SPEED 3000                // 位置环输出的最大转速限制 (RPM)
+#define POS_I_LIMIT 500                   // 位置环积分限幅，防止过冲
 
 void PosCloseloop(void)
 {
