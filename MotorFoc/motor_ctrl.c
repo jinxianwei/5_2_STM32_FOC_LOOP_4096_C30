@@ -792,9 +792,95 @@ void LessHfiSmoControl(void)
 	Para.SpeedCalTime %= SPD_CAL_PERIOD;
 }
 
+static void SixStepApplyVector(uint8_t vector, float duty)
+{
+	static const uint32_t high_enable[3] = {
+		TIM_CCER_CC1E, TIM_CCER_CC2E, TIM_CCER_CC3E};
+	static const uint32_t low_enable[3] = {
+		TIM_CCER_CC1NE, TIM_CCER_CC2NE, TIM_CCER_CC3NE};
+	volatile uint32_t *compare[3] = {
+		&TIM1->CCR1, &TIM1->CCR2, &TIM1->CCR3};
+	uint32_t output_mask = TIM_CCER_CC1E | TIM_CCER_CC1NE |
+						   TIM_CCER_CC2E | TIM_CCER_CC2NE |
+						   TIM_CCER_CC3E | TIM_CCER_CC3NE;
+	uint32_t active_compare;
+	uint32_t enabled_outputs = 0U;
+
+	duty = Limit_Sat(duty, SIX_STEP_DUTY_MAX, 0.0f);
+	if (duty <= 0.0f)
+	{
+		TIM1->CCER &= ~output_mask;
+		return;
+	}
+
+	active_compare = (uint32_t)(duty * (float)TIM1_PERIOD);
+
+	for (uint8_t phase = 0U; phase < 3U; phase++)
+	{
+		if ((vector & (1U << phase)) != 0U)
+		{
+			*compare[phase] = 0U;
+			enabled_outputs |= high_enable[phase];
+		}
+		else
+		{
+			*compare[phase] = active_compare;
+			enabled_outputs |= high_enable[phase] | low_enable[phase];
+		}
+	}
+	TIM1->CCER = (TIM1->CCER & ~output_mask) | enabled_outputs;
+}
+
+static void SixStepCommutation(float electrical_angle, float speed_ref, float duty)
+{
+	/* Bit 0/1/2 represent U/V/W; these are the six active inverter vectors. */
+	static const uint8_t active_vector[6] = {
+		0x1U, 0x3U, 0x2U, 0x6U, 0x4U, 0x5U};
+	uint8_t direction;
+	uint8_t sector;
+	float commutation_angle;
+	float sector_offset;
+
+	if ((speed_ref == 0.0f) || (duty <= 0.0f))
+	{
+		SixStepApplyVector(0U, 0.0f);
+		return;
+	}
+
+	direction = (speed_ref > 0.0f) ? 0U : 1U;
+	/* Center the selected active vector at the configured electrical advance. */
+	sector_offset = (direction == 0U)
+						? (SIX_STEP_ADVANCE_ANGLE_DEG + 30.0f)
+						: (30.0f - SIX_STEP_ADVANCE_ANGLE_DEG);
+	commutation_angle = electrical_angle + sector_offset * PIX2 / 360.0f;
+	while (commutation_angle >= PIX2)
+		commutation_angle -= PIX2;
+	while (commutation_angle < 0.0f)
+		commutation_angle += PIX2;
+
+	sector = (uint8_t)(commutation_angle / (PIX2 / 6.0f));
+	if (sector > 5U)
+		sector = 5U;
+	SixStepApplyVector(active_vector[sector], duty);
+}
+
 // 控制模式选择
 void MotorModeSel(void)
 {
+	static uint8_t openloop_active = 0U;
+	static uint32_t openloop_align_ticks = 0U;
+	static uint32_t openloop_align_ticks_required = 0U;
+	static float openloop_angle = 0.0f;
+	static float openloop_duty = 0.0f;
+
+	if (Motor.CtrlMode != SIX_STEP_OPENLOOP)
+	{
+		openloop_active = 0U;
+		openloop_align_ticks = 0U;
+		openloop_align_ticks_required = 0U;
+		openloop_duty = 0.0f;
+	}
+
 	// 控制入口：根据 CtrlMode 执行对应闭环，再统一进入 SVPWM 输出
 	switch (Motor.CtrlMode)
 	{
@@ -802,6 +888,68 @@ void MotorModeSel(void)
 	{
 		SpeedCloseloop(Para.SpeedRef, 1);
 		FocSvpwm(); // SVPWM计算
+		break;
+	}
+
+	case SIX_STEP_OPENLOOP:
+	{
+		float duty_target = Limit_Sat(SIX_STEP_OPENLOOP_DUTY, SIX_STEP_DUTY_MAX, 0.0f);
+		float duty;
+		float phase_current = AdcPara.CurU;
+		float current_v = AdcPara.CurV;
+		float current_w = AdcPara.CurW;
+		float speed_ref = SIX_STEP_OPENLOOP_SPEED_RPM;
+
+		if (phase_current < 0.0f)
+			phase_current = -phase_current;
+		if (current_v < 0.0f)
+			current_v = -current_v;
+		if (current_w < 0.0f)
+			current_w = -current_w;
+		if (current_v > phase_current)
+			phase_current = current_v;
+		if (current_w > phase_current)
+			phase_current = current_w;
+
+		if (openloop_active == 0U)
+		{
+			openloop_active = 1U;
+			openloop_align_ticks = 0U;
+			openloop_align_ticks_required =
+				(uint32_t)((float)SIX_STEP_OPENLOOP_ALIGN_TIME_MS / (TS * 1000.0f));
+			openloop_angle = 0.0f;
+			openloop_duty = 0.0f;
+		}
+
+		/* Back off above the limit; recover below 80% to avoid duty chatter. */
+		if (phase_current >= OVER_CURRENT)
+		{
+			openloop_duty *= (0.9f * OVER_CURRENT) / phase_current;
+		}
+		else if ((phase_current < 0.8f * OVER_CURRENT) && (openloop_duty < duty_target))
+		{
+			openloop_duty += 0.001f;
+			if (openloop_duty > duty_target)
+				openloop_duty = duty_target;
+		}
+		duty = openloop_duty;
+
+		if (openloop_align_ticks < openloop_align_ticks_required)
+		{
+			SixStepApplyVector(0x1U, duty);
+			openloop_align_ticks++;
+			break;
+		}
+
+		if (openloop_align_ticks == openloop_align_ticks_required)
+			openloop_align_ticks++;
+
+		SixStepCommutation(openloop_angle, speed_ref, duty);
+		openloop_angle += speed_ref * (float)Motor.P * PIX2 * TS / 60.0f;
+		while (openloop_angle >= PIX2)
+			openloop_angle -= PIX2;
+		while (openloop_angle < 0.0f)
+			openloop_angle += PIX2;
 		break;
 	}
 

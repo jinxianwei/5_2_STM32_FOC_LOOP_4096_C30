@@ -129,6 +129,12 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 			Motor.CtrlMode = SPEED_LOOP; // 有感，速度&电流闭环
 			break;
 		}
+		case SIX_STEP_OPENLOOP:
+		{
+			MotorRun();
+			Motor.CtrlMode = SIX_STEP_OPENLOOP;
+			break;
+		}
 		case CUR_LOOP:
 		{
 			MotorRun();				   // 启动PWM
@@ -224,9 +230,12 @@ void SendToVofa(void)
 	Usart.VofaData[2] = pi_spd.Fbk / Motor.P; // 实际速度
 	Usart.VofaData[3] = Motor.E_theta;		  // 编码器角度
 	Usart.VofaData[4] = flux.theta_e;		  // 磁链观测角度
-	Usart.VofaData[5] = PllHfiPara.Theta;	  // HFI角度
-	Usart.VofaData[6] = PllSmoPara.Angle;	  // 滑膜观测角度
-	Usart.VofaData[7] = Para.IfTheta;		  // IF强拖角度
+	// Usart.VofaData[5] = PllHfiPara.Theta;	  // HFI角度
+	// Usart.VofaData[6] = PllSmoPara.Angle;	  // 滑膜观测角度
+	// Usart.VofaData[7] = Para.IfTheta;		  // IF强拖角度
+	Usart.VofaData[5] = TIM1->CCR1;
+	Usart.VofaData[6] = TIM1->CCR2;
+	Usart.VofaData[7] = TIM1->CCR3;
 	Usart.VofaData[8] = AdcFilPara.CurU;	  // U相电流
 	Usart.VofaData[9] = AdcFilPara.CurV;	  // V相电流
 	Usart.VofaData[10] = AdcFilPara.CurW;	  // W相电流

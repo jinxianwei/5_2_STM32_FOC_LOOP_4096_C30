@@ -55,6 +55,7 @@
 #define HFI_FLUX /**********************/ 7  // 低速HFI高速磁链
 #define IF_SMO /************************/ 8  // IF启动高速SMO
 #define IF_FLUX /***********************/ 9  // IF启动高速磁链
+#define SIX_STEP_OPENLOOP /**************/ 13 // 六步方波换向开环控制
 
 // IF强拖参数
 #define QT_ANGLE /**********************/ 210  // 强拖至角度（0——360）
@@ -81,7 +82,12 @@
 // 速度环参数
 #define SPD_REF_TIMER /*****************/ 30   // 定义目标速度改变的梯度时间
 #define SPD_REF_OD /********************/ 5.0f // 定义目标速度改变的梯度值
-#define SPD_REF_MAX /*******************/ 12000 // 目标速度上限值，机械角速度
+#define SPD_REF_MAX /*******************/ 6000 // 目标速度上限值，机械角速度
+#define SIX_STEP_DUTY_MAX /*************/ 0.80f // 六步控制最大PWM占空比
+#define SIX_STEP_ADVANCE_ANGLE_DEG /****/ 60.0f // 六步换向超前角（电角度）
+#define SIX_STEP_OPENLOOP_SPEED_RPM /***/ 100.0f // 六步开环机械转速给定
+#define SIX_STEP_OPENLOOP_DUTY /********/ 0.60f // 六步开环PWM占空比
+#define SIX_STEP_OPENLOOP_ALIGN_TIME_MS /**/ 200U // 开环启动前转子定向时间
 
 // HFI高频注入参数
 #define HFI_UIN_OFFSET /****************/ 1.0f // HFI注入高频电压偏置
@@ -111,9 +117,9 @@
 #define PLL_KI_DEF /********************/ 72995.6f // PLL参数
 
 // 电压保护参数
-#define LOW_VOLTAGE_V /*****************/ 26.0f  // 低压保护
-#define STAN_VOLTAGE_V /****************/ 28.0f // 标准工作电压
-#define HIHG_VOLTAGE_V /****************/ 30.0f // 高压保护
+#define LOW_VOLTAGE_V /*****************/ 9.0f  // 低压保护
+#define STAN_VOLTAGE_V /****************/ 12.0f // 标准工作电压
+#define HIHG_VOLTAGE_V /****************/ 15.0f // 高压保护
 #define LV_PROTECT_TIME /***************/ 500   // 欠压保护检测时间, 单位: ms
 #define OV_PROTECT_TIME /***************/ 500   // 过压保护检测时间, 单位: ms
 
@@ -136,11 +142,11 @@
 
 // 堵转保护参数
 #define LOCK_TIME /*********************/ 500  // 堵转时间，单位：ms
-#define LOCK_CUR /**********************/ 10.0f // 堵转电流，单位：A
+#define LOCK_CUR /**********************/ 2.0f // 堵转电流，单位：A
 #define SPEED_PRO_TIME /****************/ 100  // 速度保护时间，单位：ms
 
 // 过流保护参数
-#define OVER_CURRENT /*******************/ 10.0f // 过流保护阈值
+#define OVER_CURRENT /*******************/ 2.0f // 过流保护阈值
 
 #define RGB_Luminance /*****************/ 4 // RGB LED亮度调节，一共8档(0~7)
 #define VR_OR_PC /**********************/ 0 // 电机命令方式: VR: 1 或 PC调速: 0
