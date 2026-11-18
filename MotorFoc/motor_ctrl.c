@@ -895,17 +895,20 @@ void MotorModeSel(void)
 	{
 		float duty_target = Limit_Sat(SIX_STEP_OPENLOOP_DUTY, SIX_STEP_DUTY_MAX, 0.0f);
 		float duty;
+		// 获取三相电流值，用于后续过流限制
 		float phase_current = AdcPara.CurU;
 		float current_v = AdcPara.CurV;
 		float current_w = AdcPara.CurW;
 		float speed_ref = SIX_STEP_OPENLOOP_SPEED_RPM;
-
+		
+		// 三相电流取绝对值
 		if (phase_current < 0.0f)
 			phase_current = -phase_current;
 		if (current_v < 0.0f)
 			current_v = -current_v;
 		if (current_w < 0.0f)
 			current_w = -current_w;
+		// 三相电流取最大值，用于判断过流
 		if (current_v > phase_current)
 			phase_current = current_v;
 		if (current_w > phase_current)
@@ -922,13 +925,15 @@ void MotorModeSel(void)
 		}
 
 		/* Back off above the limit; recover below 80% to avoid duty chatter. */
+		// 当三相电流超过过流阈值后，降低占空比起到限流作用
 		if (phase_current >= OVER_CURRENT)
 		{
 			openloop_duty *= (0.9f * OVER_CURRENT) / phase_current;
 		}
+		// 电流正常时，缓慢增加占空比，直到达到目标占空比
 		else if ((phase_current < 0.8f * OVER_CURRENT) && (openloop_duty < duty_target))
 		{
-			openloop_duty += 0.001f;
+			openloop_duty += 0.001f; // 每次占空比增加 0.1%，直到达到目标占空比
 			if (openloop_duty > duty_target)
 				openloop_duty = duty_target;
 		}
@@ -936,7 +941,7 @@ void MotorModeSel(void)
 
 		if (openloop_align_ticks < openloop_align_ticks_required)
 		{
-			SixStepApplyVector(0x1U, duty);
+			SixStepApplyVector(0x1U, duty); // 0x1U，二进制001，对应控制时的U相激励
 			openloop_align_ticks++;
 			break;
 		}
@@ -945,6 +950,7 @@ void MotorModeSel(void)
 			openloop_align_ticks++;
 
 		SixStepCommutation(openloop_angle, speed_ref, duty);
+		// 模拟电角度更新
 		openloop_angle += speed_ref * (float)Motor.P * PIX2 * TS / 60.0f;
 		while (openloop_angle >= PIX2)
 			openloop_angle -= PIX2;
