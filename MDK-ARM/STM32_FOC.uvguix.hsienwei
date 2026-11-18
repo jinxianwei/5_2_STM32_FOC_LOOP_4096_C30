@@ -3607,7 +3607,7 @@
       <Doc>
         <Name>../Core/Src/main.c</Name>
         <ColumnNumber>0</ColumnNumber>
-        <TopLine>116</TopLine>
+        <TopLine>80</TopLine>
         <CurrentLine>81</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
@@ -3714,9 +3714,9 @@
       </Doc>
       <Doc>
         <Name>..\MotorFoc\motor_ctrl.c</Name>
-        <ColumnNumber>38</ColumnNumber>
+        <ColumnNumber>44</ColumnNumber>
         <TopLine>918</TopLine>
-        <CurrentLine>919</CurrentLine>
+        <CurrentLine>934</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
