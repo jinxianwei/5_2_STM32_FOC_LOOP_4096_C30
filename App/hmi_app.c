@@ -231,7 +231,7 @@ void RecevToVofa(void)
 // 数据发送至上位机观测
 void SendToVofa(void)
 {
-	Usart.VofaData[0] = Motor.speed_M_rpm;	  // 电角度
+	Usart.VofaData[0] = Motor.speed_M_rpm;	  // 机械转速
 	Usart.VofaData[1] = Para.SpeedRef;		  // 目标速度
 	Usart.VofaData[2] = pi_spd.Fbk / Motor.P; // 实际速度
 	Usart.VofaData[3] = Motor.E_theta;		  // 编码器角度

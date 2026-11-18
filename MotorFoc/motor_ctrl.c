@@ -831,6 +831,57 @@ static void SixStepApplyVector(uint8_t vector, float duty)
 	TIM1->CCER = (TIM1->CCER & ~output_mask) | enabled_outputs;
 }
 
+#if SIX_STEP_METHOD == 1
+static void SixStepApplyFloatingSector(uint8_t sector, float duty)
+{
+	static const uint8_t high_phase[6] = {0U, 0U, 1U, 1U, 2U, 2U};
+	static const uint8_t low_phase[6] = {1U, 2U, 2U, 0U, 0U, 1U};
+	static const uint32_t high_enable[3] = {
+		TIM_CCER_CC1E, TIM_CCER_CC2E, TIM_CCER_CC3E};
+	static const uint32_t low_enable[3] = {
+		TIM_CCER_CC1NE, TIM_CCER_CC2NE, TIM_CCER_CC3NE};
+	volatile uint32_t *compare[3] = {
+		&TIM1->CCR1, &TIM1->CCR2, &TIM1->CCR3};
+	uint32_t output_mask = TIM_CCER_CC1E | TIM_CCER_CC1NE |
+						   TIM_CCER_CC2E | TIM_CCER_CC2NE |
+						   TIM_CCER_CC3E | TIM_CCER_CC3NE;
+	uint32_t active_compare;
+	uint32_t enabled_outputs = 0U;
+
+	duty = Limit_Sat(duty, SIX_STEP_DUTY_MAX, 0.0f);
+	if ((duty <= 0.0f) || (sector >= 6U))
+	{
+		TIM1->CCER &= ~output_mask;
+		return;
+	}
+
+	active_compare = (uint32_t)(duty * (float)TIM1_PERIOD);
+
+	for (uint8_t phase = 0U; phase < 3U; phase++)
+	{
+		if (phase == high_phase[sector])
+		{
+			/* PWM2 with CCR=0 holds the high-side switch on. */
+			*compare[phase] = 0U;
+			enabled_outputs |= high_enable[phase];
+		}
+		else if (phase == low_phase[sector])
+		{
+			/* The complementary pair PWM-drives the low phase. */
+			*compare[phase] = active_compare;
+			enabled_outputs |= high_enable[phase] | low_enable[phase];
+		}
+		else
+		{
+			/* Disable both switches so this phase is electrically floating. */
+			*compare[phase] = 0U;
+		}
+	}
+
+	TIM1->CCER = (TIM1->CCER & ~output_mask) | enabled_outputs;
+}
+#endif
+
 static void SixStepCommutation(float electrical_angle, float speed_ref, float duty)
 {
 	/* Bit 0/1/2 represent U/V/W; these are the six active inverter vectors. */
@@ -863,6 +914,37 @@ static void SixStepCommutation(float electrical_angle, float speed_ref, float du
 		sector = 5U;
 	SixStepApplyVector(active_vector[sector], duty);
 }
+
+#if SIX_STEP_METHOD == 1
+static void SixStepCommutationFloating(float electrical_angle, float speed_ref, float duty)
+{
+	uint8_t direction;
+	uint8_t sector;
+	float commutation_angle;
+	float sector_offset;
+
+	if ((speed_ref == 0.0f) || (duty <= 0.0f))
+	{
+		SixStepApplyFloatingSector(0U, 0.0f);
+		return;
+	}
+
+	direction = (speed_ref > 0.0f) ? 0U : 1U;
+	sector_offset = (direction == 0U)
+						? (SIX_STEP_ADVANCE_ANGLE_DEG + 30.0f)
+						: (30.0f - SIX_STEP_ADVANCE_ANGLE_DEG);
+	commutation_angle = electrical_angle + sector_offset * PIX2 / 360.0f;
+	while (commutation_angle >= PIX2)
+		commutation_angle -= PIX2;
+	while (commutation_angle < 0.0f)
+		commutation_angle += PIX2;
+
+	sector = (uint8_t)(commutation_angle / (PIX2 / 6.0f));
+	if (sector > 5U)
+		sector = 5U;
+	SixStepApplyFloatingSector(sector, duty);
+}
+#endif
 
 // 控制模式选择
 void MotorModeSel(void)
@@ -1004,9 +1086,17 @@ void MotorModeSel(void)
 			duty *= (0.9f * OVER_CURRENT) / phase_current;
 
 		/* The calibrated closed-loop phase was observed to produce reverse torque. */
+#if SIX_STEP_METHOD == 0
 		SixStepCommutation(
 			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
 			speed_ref, duty);
+#elif SIX_STEP_METHOD == 1
+		SixStepCommutationFloating(
+			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
+			speed_ref, duty);
+#else
+#error SIX_STEP_METHOD must be 0 or 1
+#endif
 		break;
 	}
 
@@ -1060,7 +1150,13 @@ void MotorModeSel(void)
 
 		if (openloop_align_ticks < openloop_align_ticks_required)
 		{
+#if SIX_STEP_METHOD == 0
 			SixStepApplyVector(0x1U, duty); // 0x1U，二进制001，对应控制时的U相激励
+#elif SIX_STEP_METHOD == 1
+			SixStepApplyFloatingSector(0U, duty);
+#else
+#error SIX_STEP_METHOD must be 0 or 1
+#endif
 			openloop_align_ticks++;
 			break;
 		}
@@ -1068,7 +1164,11 @@ void MotorModeSel(void)
 		if (openloop_align_ticks == openloop_align_ticks_required)
 			openloop_align_ticks++;
 
+#if SIX_STEP_METHOD == 0
 		SixStepCommutation(openloop_angle, speed_ref, duty);
+#elif SIX_STEP_METHOD == 1
+		SixStepCommutationFloating(openloop_angle, speed_ref, duty);
+#endif
 		// 模拟电角度更新
 		openloop_angle += speed_ref * (float)Motor.P * PIX2 * TS / 60.0f;
 		while (openloop_angle >= PIX2)

@@ -90,6 +90,9 @@
 #define SIX_STEP_OPENLOOP_SPEED_RPM /***/ 100.0f // 六步开环机械转速给定
 #define SIX_STEP_OPENLOOP_DUTY /********/ 0.60f // 六步开环PWM占空比
 #define SIX_STEP_OPENLOOP_ALIGN_TIME_MS /**/ 200U // 开环启动前转子定向时间
+#ifndef SIX_STEP_METHOD
+#define SIX_STEP_METHOD /****************/ 1 // 开环/速度闭环：0-原矢量；1-一相浮空
+#endif
 
 // HFI高频注入参数
 #define HFI_UIN_OFFSET /****************/ 1.0f // HFI注入高频电压偏置
