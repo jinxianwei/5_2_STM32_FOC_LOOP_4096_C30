@@ -872,6 +872,10 @@ void MotorModeSel(void)
 	static uint32_t openloop_align_ticks_required = 0U;
 	static float openloop_angle = 0.0f;
 	static float openloop_duty = 0.0f;
+	static uint8_t sixstep_speed_active = 0U;
+	static uint8_t sixstep_speed_calc_ticks = 0U;
+	static float sixstep_speed_integrator = 0.0f;
+	static float sixstep_speed_duty = 0.0f;
 
 	if (Motor.CtrlMode != SIX_STEP_OPENLOOP)
 	{
@@ -879,6 +883,13 @@ void MotorModeSel(void)
 		openloop_align_ticks = 0U;
 		openloop_align_ticks_required = 0U;
 		openloop_duty = 0.0f;
+	}
+	if (Motor.CtrlMode != SIX_STEP_SPEED_LOOP)
+	{
+		sixstep_speed_active = 0U;
+		sixstep_speed_calc_ticks = 0U;
+		sixstep_speed_integrator = 0.0f;
+		sixstep_speed_duty = 0.0f;
 	}
 
 	// 控制入口：根据 CtrlMode 执行对应闭环，再统一进入 SVPWM 输出
@@ -888,6 +899,114 @@ void MotorModeSel(void)
 	{
 		SpeedCloseloop(Para.SpeedRef, 1);
 		FocSvpwm(); // SVPWM计算
+		break;
+	}
+
+	case SIX_STEP_SPEED_LOOP:
+	{
+		// 获取三相电流
+		float phase_current = AdcPara.CurU;
+		float current_v = AdcPara.CurV;
+		float current_w = AdcPara.CurW;
+		float speed_ref;
+		float speed_fbk;
+		float speed_error;
+		float duty;
+
+		if (phase_current < 0.0f)
+			phase_current = -phase_current;
+		if (current_v < 0.0f)
+			current_v = -current_v;
+		if (current_w < 0.0f)
+			current_w = -current_w;
+		// 确定三相电流最大值，做过流检测
+		if (current_v > phase_current)
+			phase_current = current_v;
+		if (current_w > phase_current)
+			phase_current = current_w;
+
+		if (sixstep_speed_active == 0U)
+		{
+			sixstep_speed_active = 1U;
+			sixstep_speed_calc_ticks = 0U;
+			sixstep_speed_integrator = 0.0f;
+			sixstep_speed_duty = 0.0f;
+			SpdRefGXieLv.XieLv_Y = 0.0f;
+			SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;
+			SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER;
+			SpdRefGXieLv.Timer_Count = 0U;
+
+			/* The six-step controller uses its own duty PI, not the FOC current PI. */
+			pi_spd.Ref = 0.0f;
+			pi_spd.Fbk = 0.0f;
+			pi_spd.err = 0.0f;
+			pi_spd.err_l = 0.0f;
+			pi_spd.Out = 0.0f;
+			pi_spd.OutF = 0.0f;
+			pi_spd.integrator = 0.0f;
+		}
+		// 目标速度限幅
+		SpdRefGXieLv.XieLv_X =
+			Limit_Sat((float)Para.SpeedRef, SPD_REF_MAX, -SPD_REF_MAX);
+		SpdRefGXieLv.Timer_Count++;// 计数超过Grad_Timer更新一次斜坡
+		if (SpdRefGXieLv.Timer_Count > SpdRefGXieLv.Grad_Timer)
+		{
+			SpdRefGXieLv.Timer_Count = 0U;
+			GradXieLv(&SpdRefGXieLv);
+		}
+		speed_ref = SpdRefGXieLv.XieLv_Y;
+		// 速度环每累计SPD_CAL_PERIOD更新一次(20khz/SPD_CAL_PERIOD=1khz)
+		if (++sixstep_speed_calc_ticks >= SPD_CAL_PERIOD)
+		{
+			float direction = (speed_ref < 0.0f) ? -1.0f : 1.0f;
+			float candidate_integrator;
+			float unsaturated_duty;
+			const float speed_loop_period = TS * (float)SPD_CAL_PERIOD;
+
+			sixstep_speed_calc_ticks = 0U;
+			speed_fbk = Motor.speed_M_rpm * direction;
+			speed_error = my_abs(speed_ref) - speed_fbk;
+
+			/* Keep the existing speed telemetry and fault checks in electrical RPM. */
+			pi_spd.Ref = speed_ref * (float)Motor.P;
+			pi_spd.Fbk = Motor.speed_E_rpm;
+			pi_spd.err = pi_spd.Ref - pi_spd.Fbk;
+
+			if (my_abs(speed_ref) < 0.5f)
+			{
+				sixstep_speed_integrator = 0.0f;
+				sixstep_speed_duty = 0.0f;
+			}
+			else
+			{
+				if (phase_current < OVER_CURRENT)
+				{
+					candidate_integrator = sixstep_speed_integrator +
+										  Para.SpdSenKi * speed_error * speed_loop_period;
+					unsaturated_duty = Para.SpdSenKp * speed_error + candidate_integrator;
+
+					/* Prevent further windup when duty or current is limited. */
+					if (!((unsaturated_duty >= SIX_STEP_DUTY_MAX && speed_error > 0.0f) ||
+						  (unsaturated_duty <= 0.0f && speed_error < 0.0f)))
+					{
+						sixstep_speed_integrator = candidate_integrator;
+					}
+				}
+
+				sixstep_speed_duty = Limit_Sat(
+					Para.SpdSenKp * speed_error + sixstep_speed_integrator,
+					SIX_STEP_DUTY_MAX, 0.0f);
+			}
+		}
+
+		duty = sixstep_speed_duty;
+		if (phase_current >= OVER_CURRENT)
+			duty *= (0.9f * OVER_CURRENT) / phase_current;
+
+		/* The calibrated closed-loop phase was observed to produce reverse torque. */
+		SixStepCommutation(
+			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
+			speed_ref, duty);
 		break;
 	}
 

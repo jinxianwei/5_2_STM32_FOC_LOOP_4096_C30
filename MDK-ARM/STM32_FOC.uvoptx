@@ -159,7 +159,7 @@
           <Type>0</Type>
           <LineNumber>89</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134243282</Address>
+          <Address>134244010</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -175,7 +175,7 @@
           <Type>0</Type>
           <LineNumber>91</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134243288</Address>
+          <Address>134244016</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -204,6 +204,38 @@
         </Bp>
         <Bp>
           <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>907</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134235006</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Code\INMO\INMOP_FOC寮€鍙戞澘\CODE\5_2_STM32_FOC_LOOP_4096_C30\MotorFoc\motor_ctrl.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32_FOC\../MotorFoc/motor_ctrl.c\907</Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>907</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134235078</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Code\INMO\INMOP_FOC寮€鍙戞澘\CODE\5_2_STM32_FOC_LOOP_4096_C30\MotorFoc\motor_ctrl.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\\../MotorFoc/motor_ctrl.c\907</Expression>
+        </Bp>
+        <Bp>
+          <Number>5</Number>
           <Type>0</Type>
           <LineNumber>210</LineNumber>
           <EnabledFlag>1</EnabledFlag>
@@ -444,6 +476,11 @@
           <count>44</count>
           <WinNumber>1</WinNumber>
           <ItemText>Para.SpdLessKi</ItemText>
+        </Ww>
+        <Ww>
+          <count>45</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Fault.bit</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

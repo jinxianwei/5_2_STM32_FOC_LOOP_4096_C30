@@ -56,6 +56,7 @@
 #define IF_SMO /************************/ 8  // IF启动高速SMO
 #define IF_FLUX /***********************/ 9  // IF启动高速磁链
 #define SIX_STEP_OPENLOOP /**************/ 13 // 六步方波换向开环控制
+#define SIX_STEP_SPEED_LOOP /*************/ 14 // 六步方波换向速度闭环控制
 
 // IF强拖参数
 #define QT_ANGLE /**********************/ 210  // 强拖至角度（0——360）
@@ -85,6 +86,7 @@
 #define SPD_REF_MAX /*******************/ 6000 // 目标速度上限值，机械角速度
 #define SIX_STEP_DUTY_MAX /*************/ 0.80f // 六步控制最大PWM占空比
 #define SIX_STEP_ADVANCE_ANGLE_DEG /****/ 60.0f // 六步换向超前角（电角度）
+#define SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG /**/ 180.0f // 闭环六步相位修正（电角度）
 #define SIX_STEP_OPENLOOP_SPEED_RPM /***/ 100.0f // 六步开环机械转速给定
 #define SIX_STEP_OPENLOOP_DUTY /********/ 0.60f // 六步开环PWM占空比
 #define SIX_STEP_OPENLOOP_ALIGN_TIME_MS /**/ 200U // 开环启动前转子定向时间

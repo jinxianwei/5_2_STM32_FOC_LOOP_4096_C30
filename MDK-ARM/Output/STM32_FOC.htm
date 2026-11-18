@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Output\STM32_FOC.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Output\STM32_FOC.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Tue Nov 17 08:27:07 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Nov 18 16:06:44 2026
 <BR><P>
 <H3>Maximum Stack Usage =        224 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -692,6 +692,7 @@ Global Symbols
 
 <P><STRONG><a name="[f0]"></a>GradXieLv</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, motor_ctrl.o(i.GradXieLv))
 <BR><BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IFObserverThetaRampCale
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorModeSel
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SpeedCloseloop
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HfiSpdCloseLoop
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LessHfiSmoControl
@@ -1312,7 +1313,7 @@ Global Symbols
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LessHfiSmoControl
 <LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LessHfiFluxControl
 <LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SyncIfFromObserver
-<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepApplyVector
+<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepApplyVector
 </UL>
 
 <P><STRONG><a name="[3]"></a>MemManage_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.MemManage_Handler))
@@ -1344,13 +1345,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task_init
 </UL>
 
-<P><STRONG><a name="[df]"></a>MotorModeSel</STRONG> (Thumb, 634 bytes, Stack size 40 bytes, motor_ctrl.o(i.MotorModeSel))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = MotorModeSel &rArr; LessHfiSmoControl &rArr; SmoObserver &rArr; IPARK_Cale
+<P><STRONG><a name="[df]"></a>MotorModeSel</STRONG> (Thumb, 1252 bytes, Stack size 72 bytes, motor_ctrl.o(i.MotorModeSel))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = MotorModeSel &rArr; LessHfiSmoControl &rArr; SmoObserver &rArr; IPARK_Cale
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IFObserverThetaRampCale
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetObserverSpeedRef
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorStop
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit_Sat
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_abs
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SpeedCloseloop
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SmoObserver
 <LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PosCloseloop
@@ -1361,9 +1363,10 @@ Global Symbols
 <LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QtMotor
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LessHfiSmoControl
 <LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LessHfiFluxControl
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GradXieLv
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FocSvpwm
-<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepCommutation
-<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepApplyVector
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepCommutation
+<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepApplyVector
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PeriodElapsedCallback
 </UL>
@@ -1720,6 +1723,7 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[8e]"></a>my_abs</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, motor_para.o(i.my_abs))
 <BR><BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IfReadyToSwitchHigh
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorModeSel
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FaultCheck
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PllCale
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SpeedCloseloop
@@ -1952,7 +1956,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> task.o(i.task_init)
 </UL>
-<P><STRONG><a name="[11e]"></a>VofaPiAdjust</STRONG> (Thumb, 280 bytes, Stack size 16 bytes, hmi_app.o(i.VofaPiAdjust))
+<P><STRONG><a name="[11e]"></a>VofaPiAdjust</STRONG> (Thumb, 290 bytes, Stack size 16 bytes, hmi_app.o(i.VofaPiAdjust))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = VofaPiAdjust &rArr; MotorRun &rArr; HAL_TIMEx_PWMN_Start &rArr; TIM_CCxNChannelCmd
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorStop
@@ -2110,19 +2114,19 @@ Local Symbols
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Process_IF_FLUX
 </UL>
 
-<P><STRONG><a name="[110]"></a>SixStepApplyVector</STRONG> (Thumb, 152 bytes, Stack size 48 bytes, motor_ctrl.o(i.SixStepApplyVector))
+<P><STRONG><a name="[111]"></a>SixStepApplyVector</STRONG> (Thumb, 152 bytes, Stack size 48 bytes, motor_ctrl.o(i.SixStepApplyVector))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = SixStepApplyVector
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit_Sat
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorModeSel
-<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepCommutation
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepCommutation
 </UL>
 
-<P><STRONG><a name="[111]"></a>SixStepCommutation</STRONG> (Thumb, 138 bytes, Stack size 0 bytes, motor_ctrl.o(i.SixStepCommutation))
+<P><STRONG><a name="[110]"></a>SixStepCommutation</STRONG> (Thumb, 138 bytes, Stack size 0 bytes, motor_ctrl.o(i.SixStepCommutation))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = SixStepCommutation &rArr; SixStepApplyVector
 </UL>
-<BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepApplyVector
+<BR>[Calls]<UL><LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SixStepApplyVector
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorModeSel
 </UL>

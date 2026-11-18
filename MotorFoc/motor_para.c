@@ -266,8 +266,8 @@ double myln(double a)
 void MotorInit(void)
 {
 	// TODO: 电机参数初始化
-	Para.SpdSenKp = 0.001f;
-	Para.SpdSenKi = 0.1f;
+	Para.SpdSenKp = 0.001f; // 六步速度闭环比例系数，单位：占空比/RPM
+	Para.SpdSenKi = 0.1f;   // 六步速度闭环积分系数
 	Para.SpdLessKp = 0.0005f;
 	Para.SpdLessKi = 0.01f;
 	Pos.Kp = 0.3;
