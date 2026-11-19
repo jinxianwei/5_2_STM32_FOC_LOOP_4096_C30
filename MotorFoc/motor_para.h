@@ -36,7 +36,7 @@
 // FOC参数
 #define SART_OF_3 /*********************/ 0.57735f
 #define SVPWM_KM /**********************/ (STAN_VOLTAGE_V * SART_OF_3)
-#define SVPWM_KM_BACKW /****************/ 0.061858f // 倒数  1/(STAN_VOLTAGE_V*SART_OF_3)
+#define SVPWM_KM_BACKW /****************/ 0.1443376f // 倒数  1/(STAN_VOLTAGE_V*SART_OF_3)
 #define VBUS_S /************************/ (STAN_VOLTAGE_V*SART_OF_3*0.96)     //  (STAN_VOLTAGE_V*SART_OF_3*0.96)
 #define PI_MAX_Ud /*********************/ (STAN_VOLTAGE_V*SART_OF_3*0.92)        //  (STAN_VOLTAGE_V*SART_OF_3*0.92)   // 13.5  //12.347
 #define PI_MAX_Uq /*********************/ (STAN_VOLTAGE_V*SART_OF_3*0.92)       //  (STAN_VOLTAGE_V*SART_OF_3*0.92)
