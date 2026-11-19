@@ -958,6 +958,8 @@ void MotorModeSel(void)
 	static uint8_t sixstep_speed_calc_ticks = 0U;
 	static float sixstep_speed_integrator = 0.0f;
 	static float sixstep_speed_duty = 0.0f;
+	static uint8_t sixstep_current_active = 0U;
+	static float sixstep_current_integrator = 0.0f;
 
 	if (Motor.CtrlMode != SIX_STEP_OPENLOOP)
 	{
@@ -972,6 +974,11 @@ void MotorModeSel(void)
 		sixstep_speed_calc_ticks = 0U;
 		sixstep_speed_integrator = 0.0f;
 		sixstep_speed_duty = 0.0f;
+	}
+	if (Motor.CtrlMode != SIX_STEP_CURRENT_LOOP)
+	{
+		sixstep_current_active = 0U;
+		sixstep_current_integrator = 0.0f;
 	}
 
 	// 控制入口：根据 CtrlMode 执行对应闭环，再统一进入 SVPWM 输出
@@ -1086,6 +1093,98 @@ void MotorModeSel(void)
 			duty *= (0.9f * OVER_CURRENT) / phase_current;
 
 		/* The calibrated closed-loop phase was observed to produce reverse torque. */
+#if SIX_STEP_METHOD == 0
+		SixStepCommutation(
+			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
+			speed_ref, duty);
+#elif SIX_STEP_METHOD == 1
+		SixStepCommutationFloating(
+			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
+			speed_ref, duty);
+#else
+#error SIX_STEP_METHOD must be 0 or 1
+#endif
+		break;
+	}
+
+	case SIX_STEP_CURRENT_LOOP:
+	{
+		float current_ref = Limit_Sat(
+			Para.CurRef, SIX_STEP_CURRENT_REF_MAX, -SIX_STEP_CURRENT_REF_MAX);
+		float current_feedback = 0.0f;
+		float current_peak = 0.0f;
+		float current_error;
+		float speed_ref = current_ref;
+		float duty = 0.0f;
+		float vbus = AdcPara.Vbus;
+		float phase_current;
+		float current_u = AdcFilPara.CurU;
+		float current_v = AdcFilPara.CurV;
+		float current_w = AdcFilPara.CurW;
+		float raw_current_u = AdcPara.CurU;
+		float raw_current_v = AdcPara.CurV;
+		float raw_current_w = AdcPara.CurW;
+
+		if (current_u < 0.0f)
+			current_u = -current_u;
+		if (current_v < 0.0f)
+			current_v = -current_v;
+		if (current_w < 0.0f)
+			current_w = -current_w;
+		current_feedback = current_u;
+		if (current_v > current_feedback)
+			current_feedback = current_v;
+		if (current_w > current_feedback)
+			current_feedback = current_w;
+
+		if (raw_current_u < 0.0f)
+			raw_current_u = -raw_current_u;
+		if (raw_current_v < 0.0f)
+			raw_current_v = -raw_current_v;
+		if (raw_current_w < 0.0f)
+			raw_current_w = -raw_current_w;
+		current_peak = raw_current_u;
+		if (raw_current_v > current_peak)
+			current_peak = raw_current_v;
+		if (raw_current_w > current_peak)
+			current_peak = raw_current_w;
+
+		if (sixstep_current_active == 0U)
+		{
+			sixstep_current_active = 1U;
+			sixstep_current_integrator = 0.0f;
+		}
+
+		phase_current = my_abs(current_ref);
+		current_error = phase_current - current_feedback;
+		if ((phase_current >= 0.05f) &&
+			(vbus > 1.0f) &&
+			(current_peak < OVER_CURRENT) &&
+			(my_abs(Motor.speed_M_rpm) < SIX_STEP_CURRENT_MAX_SPEED_RPM))
+		{
+			float max_voltage = vbus * SIX_STEP_DUTY_MAX;
+			float candidate_integrator = Limit_Sat(
+				sixstep_current_integrator +
+					SIX_STEP_CURRENT_KI * current_error * TS,
+				max_voltage, 0.0f);
+			float unsaturated_voltage =
+				SIX_STEP_CURRENT_KP * current_error + candidate_integrator;
+
+			if (!((unsaturated_voltage >= max_voltage) && (current_error > 0.0f)))
+				sixstep_current_integrator = candidate_integrator;
+
+			duty = Limit_Sat(
+					   SIX_STEP_CURRENT_KP * current_error +
+						   sixstep_current_integrator,
+					   max_voltage, 0.0f) /
+				   vbus;
+		}
+		else
+		{
+			sixstep_current_integrator = 0.0f;
+		}
+
+		/* Signed current reference selects commutation direction; magnitude is the current target. */
 #if SIX_STEP_METHOD == 0
 		SixStepCommutation(
 			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,

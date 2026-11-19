@@ -57,6 +57,7 @@
 #define IF_FLUX /***********************/ 9  // IF启动高速磁链
 #define SIX_STEP_OPENLOOP /**************/ 13 // 六步方波换向开环控制
 #define SIX_STEP_SPEED_LOOP /*************/ 14 // 六步方波换向速度闭环控制
+#define SIX_STEP_CURRENT_LOOP /***********/ 15 // 六步方波换向电流闭环控制
 
 // IF强拖参数
 #define QT_ANGLE /**********************/ 210  // 强拖至角度（0——360）
@@ -90,6 +91,10 @@
 #define SIX_STEP_OPENLOOP_SPEED_RPM /***/ 100.0f // 六步开环机械转速给定
 #define SIX_STEP_OPENLOOP_DUTY /********/ 0.60f // 六步开环PWM占空比
 #define SIX_STEP_OPENLOOP_ALIGN_TIME_MS /**/ 200U // 开环启动前转子定向时间
+#define SIX_STEP_CURRENT_KP /************/ 0.3f // 六步电流环比例系数，单位V/A
+#define SIX_STEP_CURRENT_KI /************/ 1000.0f // 六步电流环积分系数，单位V/(A*s)
+#define SIX_STEP_CURRENT_REF_MAX /*******/ 5.0f // 六步电流给定上限，单位A
+#define SIX_STEP_CURRENT_MAX_SPEED_RPM /**/ SPD_REF_MAX // 六步电流模式最高机械转速
 #ifndef SIX_STEP_METHOD
 #define SIX_STEP_METHOD /****************/ 1 // 方波六步方式：0-六个基础矢量；1-一相浮空的六步换向
 #endif
@@ -147,11 +152,11 @@
 
 // 堵转保护参数
 #define LOCK_TIME /*********************/ 500  // 堵转时间，单位：ms
-#define LOCK_CUR /**********************/ 2.0f // 堵转电流，单位：A
+#define LOCK_CUR /**********************/ 5.0f // 堵转电流，单位：A
 #define SPEED_PRO_TIME /****************/ 100  // 速度保护时间，单位：ms
 
 // 过流保护参数
-#define OVER_CURRENT /*******************/ 2.0f // 过流保护阈值
+#define OVER_CURRENT /*******************/ 5.0f // 过流保护阈值
 
 #define RGB_Luminance /*****************/ 4 // RGB LED亮度调节，一共8档(0~7)
 #define VR_OR_PC /**********************/ 0 // 电机命令方式: VR: 1 或 PC调速: 0
