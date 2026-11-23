@@ -946,6 +946,89 @@ static void SixStepCommutationFloating(float electrical_angle, float speed_ref, 
 }
 #endif
 
+// 六步电流内环状态：纯电流环与速度/电流双环共用，切换模式时由 MotorModeSel 复位
+static uint8_t sixstep_current_active = 0U;
+static float sixstep_current_integrator = 0.0f;
+
+/**
+ * 六步电流调节器：每个 20 kHz 控制周期调用一次，返回 PWM 占空比。
+ * current_ref 带符号，其绝对值作为导通相电流目标，符号决定换向方向。
+ */
+static float SixStepCurrentRegulate(float current_ref)
+{
+	float current_feedback = 0.0f;
+	float current_peak = 0.0f;
+	float current_error;
+	float duty = 0.0f;
+	float vbus = AdcPara.Vbus;
+	float phase_current;
+	float current_u = AdcFilPara.CurU;
+	float current_v = AdcFilPara.CurV;
+	float current_w = AdcFilPara.CurW;
+	float raw_current_u = AdcPara.CurU;
+	float raw_current_v = AdcPara.CurV;
+	float raw_current_w = AdcPara.CurW;
+
+	if (current_u < 0.0f)
+		current_u = -current_u;
+	if (current_v < 0.0f)
+		current_v = -current_v;
+	if (current_w < 0.0f)
+		current_w = -current_w;
+	/* 三相三线制下 |Iu|+|Iv|+|Iw| = 2*导通相电流，抗浮空相噪声优于取最大值 */
+	current_feedback = (current_u + current_v + current_w) * 0.5f;
+
+	if (raw_current_u < 0.0f)
+		raw_current_u = -raw_current_u;
+	if (raw_current_v < 0.0f)
+		raw_current_v = -raw_current_v;
+	if (raw_current_w < 0.0f)
+		raw_current_w = -raw_current_w;
+	current_peak = raw_current_u;
+	if (raw_current_v > current_peak)
+		current_peak = raw_current_v;
+	if (raw_current_w > current_peak)
+		current_peak = raw_current_w;
+
+	if (sixstep_current_active == 0U)
+	{
+		sixstep_current_active = 1U;
+		sixstep_current_integrator = 0.0f;
+	}
+
+	phase_current = my_abs(current_ref);
+	current_error = phase_current - current_feedback;
+	if ((phase_current >= 0.05f) &&
+		(vbus > 1.0f) &&
+		(current_peak < OVER_CURRENT) &&
+		(my_abs(Motor.speed_M_rpm) < SIX_STEP_CURRENT_MAX_SPEED_RPM))
+	{
+		float max_voltage = vbus * SIX_STEP_DUTY_MAX;
+		float candidate_integrator = Limit_Sat(
+			sixstep_current_integrator +
+				SIX_STEP_CURRENT_KI * current_error * TS,
+			max_voltage, 0.0f);
+		float unsaturated_voltage =
+			SIX_STEP_CURRENT_KP * current_error + candidate_integrator;
+
+		if (!((unsaturated_voltage >= max_voltage) && (current_error > 0.0f)))
+			sixstep_current_integrator = candidate_integrator;
+
+		duty = Limit_Sat(
+				   SIX_STEP_CURRENT_KP * current_error +
+					   sixstep_current_integrator,
+				   max_voltage, 0.0f) /
+			   vbus;
+	}
+	else
+	{
+		/* 不在过流/超速时硬清零积分器，缓慢泄放避免占空比崩溃形成极限环 */
+		sixstep_current_integrator *= 0.9f;
+	}
+
+	return duty;
+}
+
 // 控制模式选择
 void MotorModeSel(void)
 {
@@ -958,8 +1041,10 @@ void MotorModeSel(void)
 	static uint8_t sixstep_speed_calc_ticks = 0U;
 	static float sixstep_speed_integrator = 0.0f;
 	static float sixstep_speed_duty = 0.0f;
-	static uint8_t sixstep_current_active = 0U;
-	static float sixstep_current_integrator = 0.0f;
+	static uint8_t sixstep_speed_current_active = 0U;
+	static uint8_t sixstep_speed_current_calc_ticks = 0U;
+	static float sixstep_speed_current_integrator = 0.0f;
+	static float sixstep_speed_current_ref = 0.0f;
 
 	if (Motor.CtrlMode != SIX_STEP_OPENLOOP)
 	{
@@ -975,10 +1060,18 @@ void MotorModeSel(void)
 		sixstep_speed_integrator = 0.0f;
 		sixstep_speed_duty = 0.0f;
 	}
-	if (Motor.CtrlMode != SIX_STEP_CURRENT_LOOP)
+	if ((Motor.CtrlMode != SIX_STEP_CURRENT_LOOP) &&
+		(Motor.CtrlMode != SIX_STEP_SPEED_CURRENT_LOOP))
 	{
 		sixstep_current_active = 0U;
 		sixstep_current_integrator = 0.0f;
+	}
+	if (Motor.CtrlMode != SIX_STEP_SPEED_CURRENT_LOOP)
+	{
+		sixstep_speed_current_active = 0U;
+		sixstep_speed_current_calc_ticks = 0U;
+		sixstep_speed_current_integrator = 0.0f;
+		sixstep_speed_current_ref = 0.0f;
 	}
 
 	// 控制入口：根据 CtrlMode 执行对应闭环，再统一进入 SVPWM 输出
@@ -1111,86 +1204,113 @@ void MotorModeSel(void)
 	{
 		float current_ref = Limit_Sat(
 			Para.CurRef, SIX_STEP_CURRENT_REF_MAX, -SIX_STEP_CURRENT_REF_MAX);
-		float current_feedback = 0.0f;
-		float current_peak = 0.0f;
-		float current_error;
-		float speed_ref = current_ref;
-		float duty = 0.0f;
-		float vbus = AdcPara.Vbus;
-		float phase_current;
-		float current_u = AdcFilPara.CurU;
-		float current_v = AdcFilPara.CurV;
-		float current_w = AdcFilPara.CurW;
-		float raw_current_u = AdcPara.CurU;
-		float raw_current_v = AdcPara.CurV;
-		float raw_current_w = AdcPara.CurW;
-
-		if (current_u < 0.0f)
-			current_u = -current_u;
-		if (current_v < 0.0f)
-			current_v = -current_v;
-		if (current_w < 0.0f)
-			current_w = -current_w;
-		/* 三相三线制下 |Iu|+|Iv|+|Iw| = 2*导通相电流，抗浮空相噪声优于取最大值 */
-		current_feedback = (current_u + current_v + current_w) * 0.5f;
-
-		if (raw_current_u < 0.0f)
-			raw_current_u = -raw_current_u;
-		if (raw_current_v < 0.0f)
-			raw_current_v = -raw_current_v;
-		if (raw_current_w < 0.0f)
-			raw_current_w = -raw_current_w;
-		current_peak = raw_current_u;
-		if (raw_current_v > current_peak)
-			current_peak = raw_current_v;
-		if (raw_current_w > current_peak)
-			current_peak = raw_current_w;
-
-		if (sixstep_current_active == 0U)
-		{
-			sixstep_current_active = 1U;
-			sixstep_current_integrator = 0.0f;
-		}
-
-		phase_current = my_abs(current_ref);
-		current_error = phase_current - current_feedback;
-		if ((phase_current >= 0.05f) &&
-			(vbus > 1.0f) &&
-			(current_peak < OVER_CURRENT) &&
-			(my_abs(Motor.speed_M_rpm) < SIX_STEP_CURRENT_MAX_SPEED_RPM))
-		{
-			float max_voltage = vbus * SIX_STEP_DUTY_MAX;
-			float candidate_integrator = Limit_Sat(
-				sixstep_current_integrator +
-					SIX_STEP_CURRENT_KI * current_error * TS,
-				max_voltage, 0.0f);
-			float unsaturated_voltage =
-				SIX_STEP_CURRENT_KP * current_error + candidate_integrator;
-
-			if (!((unsaturated_voltage >= max_voltage) && (current_error > 0.0f)))
-				sixstep_current_integrator = candidate_integrator;
-
-			duty = Limit_Sat(
-					   SIX_STEP_CURRENT_KP * current_error +
-						   sixstep_current_integrator,
-					   max_voltage, 0.0f) /
-				   vbus;
-		}
-		else
-		{
-			/* 不在过流/超速时硬清零积分器，缓慢泄放避免占空比崩溃形成极限环 */
-			sixstep_current_integrator *= 0.9f;
-		}
+		float duty = SixStepCurrentRegulate(current_ref);
 
 		/* Signed current reference selects commutation direction; magnitude is the current target. */
 #if SIX_STEP_METHOD == 0
 		SixStepCommutation(
 			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
-			speed_ref, duty);
+			current_ref, duty);
 #elif SIX_STEP_METHOD == 1
 		SixStepCommutationFloating(
 			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
-			speed_ref, duty);
+			current_ref, duty);
+#else
+#error SIX_STEP_METHOD must be 0 or 1
+#endif
+		break;
+	}
+
+	case SIX_STEP_SPEED_CURRENT_LOOP:
+	{
+		float speed_ref;
+		float current_ref;
+		float duty;
+
+		if (sixstep_speed_current_active == 0U)
+		{
+			sixstep_speed_current_active = 1U;
+			sixstep_speed_current_calc_ticks = 0U;
+			sixstep_speed_current_integrator = 0.0f;
+			sixstep_speed_current_ref = 0.0f;
+			sixstep_current_active = 0U;
+			sixstep_current_integrator = 0.0f;
+			SpdRefGXieLv.XieLv_Y = 0.0f;
+			SpdRefGXieLv.XieLv_Grad = SPD_REF_OD;
+			SpdRefGXieLv.Grad_Timer = SPD_REF_TIMER;
+			SpdRefGXieLv.Timer_Count = 0U;
+
+			/* pi_spd 仅用于上位机遥测和故障检测，速度环使用独立积分器 */
+			pi_spd.Ref = 0.0f;
+			pi_spd.Fbk = 0.0f;
+			pi_spd.err = 0.0f;
+			pi_spd.err_l = 0.0f;
+			pi_spd.Out = 0.0f;
+			pi_spd.OutF = 0.0f;
+			pi_spd.integrator = 0.0f;
+		}
+
+		/* 速度给定斜坡，与六步速度环保持一致 */
+		SpdRefGXieLv.XieLv_X =
+			Limit_Sat((float)Para.SpeedRef, SPD_REF_MAX, -SPD_REF_MAX);
+		if (++SpdRefGXieLv.Timer_Count > SpdRefGXieLv.Grad_Timer)
+		{
+			SpdRefGXieLv.Timer_Count = 0U;
+			GradXieLv(&SpdRefGXieLv);
+		}
+		speed_ref = SpdRefGXieLv.XieLv_Y;
+
+		/* 速度外环 1 kHz：机械 rpm 误差 -> 带符号的相电流给定 */
+		if (++sixstep_speed_current_calc_ticks >= SPD_CAL_PERIOD)
+		{
+			float direction = (speed_ref < 0.0f) ? -1.0f : 1.0f;
+			const float speed_loop_period = TS * (float)SPD_CAL_PERIOD;
+			float speed_error;
+			float candidate_integrator;
+			float unsaturated_current;
+
+			sixstep_speed_current_calc_ticks = 0U;
+			speed_error = my_abs(speed_ref) - Motor.speed_M_rpm * direction;
+
+			pi_spd.Ref = speed_ref * (float)Motor.P;
+			pi_spd.Fbk = Motor.speed_E_rpm;
+			pi_spd.err = pi_spd.Ref - pi_spd.Fbk;
+
+			if (my_abs(speed_ref) < 0.5f)
+			{
+				sixstep_speed_current_integrator = 0.0f;
+				sixstep_speed_current_ref = 0.0f;
+			}
+			else
+			{
+				candidate_integrator = sixstep_speed_current_integrator +
+					SIX_STEP_SPEED_KI * speed_error * speed_loop_period;
+				unsaturated_current =
+					SIX_STEP_SPEED_KP * speed_error + candidate_integrator;
+
+				/* 电流给定饱和时停止积分，避免速度环 windup */
+				if (!((unsaturated_current >= SIX_STEP_CURRENT_REF_MAX && speed_error > 0.0f) ||
+					  (unsaturated_current <= 0.0f && speed_error < 0.0f)))
+					sixstep_speed_current_integrator = candidate_integrator;
+
+				sixstep_speed_current_ref = direction * Limit_Sat(
+					SIX_STEP_SPEED_KP * speed_error + sixstep_speed_current_integrator,
+					SIX_STEP_CURRENT_REF_MAX, 0.0f);
+			}
+		}
+
+		/* 电流内环 20 kHz：复用纯电流环的调节器与限流保护 */
+		current_ref = sixstep_speed_current_ref;
+		duty = SixStepCurrentRegulate(current_ref);
+
+#if SIX_STEP_METHOD == 0
+		SixStepCommutation(
+			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
+			current_ref, duty);
+#elif SIX_STEP_METHOD == 1
+		SixStepCommutationFloating(
+			Motor.E_theta + SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG * PIX2 / 360.0f,
+			current_ref, duty);
 #else
 #error SIX_STEP_METHOD must be 0 or 1
 #endif

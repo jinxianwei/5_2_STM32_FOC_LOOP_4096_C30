@@ -58,6 +58,7 @@
 #define SIX_STEP_OPENLOOP /**************/ 13 // 六步方波换向开环控制
 #define SIX_STEP_SPEED_LOOP /*************/ 14 // 六步方波换向速度闭环控制
 #define SIX_STEP_CURRENT_LOOP /***********/ 15 // 六步方波换向电流闭环控制
+#define SIX_STEP_SPEED_CURRENT_LOOP /**/ 16 // 六步方波换向速度外环、电流内环双闭环控制
 
 // IF强拖参数
 #define QT_ANGLE /**********************/ 210  // 强拖至角度（0——360）
@@ -95,6 +96,8 @@
 #define SIX_STEP_CURRENT_KI /************/ 1000.0f // 六步电流环积分系数，单位V/(A*s)
 #define SIX_STEP_CURRENT_REF_MAX /*******/ 4.0f // 六步电流给定上限，单位A（需低于 OVER_CURRENT，留出 PWM 纹波裕量）
 #define SIX_STEP_CURRENT_MAX_SPEED_RPM /**/ SPD_REF_MAX // 六步电流模式最高机械转速
+#define SIX_STEP_SPEED_KP /*************/ 0.002f // 六步速度外环比例系数，单位 A/RPM（输出为相电流给定）
+#define SIX_STEP_SPEED_KI /*************/ 0.05f  // 六步速度外环积分系数，单位 A/(RPM*s)
 #ifndef SIX_STEP_METHOD
 #define SIX_STEP_METHOD /****************/ 1 // 方波六步方式：0-六个基础矢量；1-一相浮空的六步换向
 #endif

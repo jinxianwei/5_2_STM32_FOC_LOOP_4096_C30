@@ -147,6 +147,12 @@ static void VofaPiAdjust(uint8_t *DataBuff, uint8_t on)
 			Motor.CtrlMode = SIX_STEP_CURRENT_LOOP;
 			break;
 		}
+		case SIX_STEP_SPEED_CURRENT_LOOP:
+		{
+			MotorRun();
+			Motor.CtrlMode = SIX_STEP_SPEED_CURRENT_LOOP;
+			break;
+		}
 		case CUR_LOOP:
 		{
 			MotorRun();				   // 启动PWM
@@ -310,6 +316,7 @@ void VrTask(void)
 	}
 	case SPEED_LOOP:
 	case SIX_STEP_SPEED_LOOP:
+	case SIX_STEP_SPEED_CURRENT_LOOP:
 	{
 		AdcVr = (float)AdcPara.Vr;
 		Para.SpeedRef = (int16_t)AdcVr;
