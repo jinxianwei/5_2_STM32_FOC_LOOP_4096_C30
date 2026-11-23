@@ -1131,11 +1131,8 @@ void MotorModeSel(void)
 			current_v = -current_v;
 		if (current_w < 0.0f)
 			current_w = -current_w;
-		current_feedback = current_u;
-		if (current_v > current_feedback)
-			current_feedback = current_v;
-		if (current_w > current_feedback)
-			current_feedback = current_w;
+		/* 三相三线制下 |Iu|+|Iv|+|Iw| = 2*导通相电流，抗浮空相噪声优于取最大值 */
+		current_feedback = (current_u + current_v + current_w) * 0.5f;
 
 		if (raw_current_u < 0.0f)
 			raw_current_u = -raw_current_u;
@@ -1181,7 +1178,8 @@ void MotorModeSel(void)
 		}
 		else
 		{
-			sixstep_current_integrator = 0.0f;
+			/* 不在过流/超速时硬清零积分器，缓慢泄放避免占空比崩溃形成极限环 */
+			sixstep_current_integrator *= 0.9f;
 		}
 
 		/* Signed current reference selects commutation direction; magnitude is the current target. */

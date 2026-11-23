@@ -93,7 +93,7 @@
 #define SIX_STEP_OPENLOOP_ALIGN_TIME_MS /**/ 200U // 开环启动前转子定向时间
 #define SIX_STEP_CURRENT_KP /************/ 0.3f // 六步电流环比例系数，单位V/A
 #define SIX_STEP_CURRENT_KI /************/ 1000.0f // 六步电流环积分系数，单位V/(A*s)
-#define SIX_STEP_CURRENT_REF_MAX /*******/ 5.0f // 六步电流给定上限，单位A
+#define SIX_STEP_CURRENT_REF_MAX /*******/ 4.0f // 六步电流给定上限，单位A（需低于 OVER_CURRENT，留出 PWM 纹波裕量）
 #define SIX_STEP_CURRENT_MAX_SPEED_RPM /**/ SPD_REF_MAX // 六步电流模式最高机械转速
 #ifndef SIX_STEP_METHOD
 #define SIX_STEP_METHOD /****************/ 1 // 方波六步方式：0-六个基础矢量；1-一相浮空的六步换向
