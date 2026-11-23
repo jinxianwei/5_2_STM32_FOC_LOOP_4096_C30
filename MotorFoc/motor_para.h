@@ -87,7 +87,7 @@
 #define SPD_REF_OD /********************/ 5.0f // 定义目标速度改变的梯度值
 #define SPD_REF_MAX /*******************/ 6000 // 目标速度上限值，机械角速度
 #define SIX_STEP_DUTY_MAX /*************/ 0.80f // 六步控制最大PWM占空比
-#define SIX_STEP_ADVANCE_ANGLE_DEG /****/ 60.0f // 六步换向超前角（电角度）
+#define SIX_STEP_ADVANCE_ANGLE_DEG /****/ 90.0f // 六步换向超前角（电角度）
 #define SIX_STEP_CLOSEDLOOP_PHASE_OFFSET_DEG /**/ 180.0f // 闭环六步相位修正（电角度）
 #define SIX_STEP_OPENLOOP_SPEED_RPM /***/ 100.0f // 六步开环机械转速给定
 #define SIX_STEP_OPENLOOP_DUTY /********/ 0.60f // 六步开环PWM占空比
